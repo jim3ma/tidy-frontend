@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('#checkin').click(function() {
+          $('#checking').removeClass('inactive');
+          //doing upload data
+          $('#checking').addClass('active');
+        });
+        $.ajax({
+          //url: 'http://ip-api.com/json',
+          url: 'http://10.202.240.252:8088/ping',
+          dataType: 'jsonp',
+          data: {
+            format: 'json'
+          },
+          //data: {
+          //  title: $('#title').val()
+          //},
+          success: function(data) {
+            console.log(data);
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="ui form">
+      <div class="field">
+        <label><h3>签到内容</h3></label>
+        <textarea placeholder="点此输入签到内容"></textarea>
+      </div>
+    </div>
+    <div id="label">
+    <a class="ui red tag label">红标签<i class="delete icon"></i></a>
+    <a class="ui green tag label">绿标签<i class="delete icon"></i></a>
+    <a class="ui yellow tag label">黄标签<i class="delete icon"></i></a>
+    </div>
+    <div class="ui right labeled left icon input">
+      <i class="tags icon"></i>
+      <input type="text" placeholder="输入标签">
+      <a class="ui tag label">添加标签</a>
+    </div>
+    <br/>
+    <div class="ui center aligned container">
+      <button id="checkin" class="ui green button">签到</button>
+      <div id="checking" class="ui inactive inverted dimmer">
+        <div class="ui medium text loader">签到中</div>
+      </div>
+    </div>
+    <br/>
+    <style>
+      .ui.form {
+        margin: 10px;
+      }
+      .ui.input{
+        margin: 10px;
+      }
+      #label{
+        margin-left: 10px;
+      }
+  </style>
+  </body>
+</html>
