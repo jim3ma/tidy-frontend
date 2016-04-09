@@ -19,17 +19,26 @@
                     dataType: 'jsonp',
                     //type: 'POST',
                     data: {
-                        id: '1'
+                        uid: '1'
                     },
                     success: function(res) {
-                        console.log(res.data);
+                        //console.log(res.data);
                         var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
-                        var sorted = _.sortBy(res.data, ['Timestamp'])
+                        var sorted = _.sortBy(res.data, ['timestamp'])
                         console.log(sorted)
                         for(var i = sorted.length - 1; i >= 0; i --) {
                             var c = sorted[i]
-                            var date = c.CreateYear + '年' + c.CreateMonth + '月' + c.CreateDay + '日' + ' ' + c.CreateHour + ":" + c.CreateMin + ":" + c.CreateSec;
-                            var html = tmpl({'content': c.Content, 'date': date})
+                            if(c.create_hour < 10){
+                                c.create_hour = '0' + c.create_hour
+                            }
+                            if(c.create_min < 10){
+                                c.create_min = '0' + c.create_min
+                            }
+                            if(c.create_Sec < 10){
+                                c.create_Sec = '0' + c.create_Sec
+                            }
+                            var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
+                            var html = tmpl({'content': c.content, 'date': date})
                             //console.log(html)
                             $('#container').append($(html));
                         }
