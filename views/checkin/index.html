@@ -1,75 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $('#checkin').click(function() {
-          $('#checking').removeClass('inactive').addClass('active');
-          var content = $('#chkcnt').val()
-          console.log(content)
-          //doing upload data
-          $.ajax({
-            //url: 'http://ip-api.com/json',
-            url: 'http://10.202.240.252:8089/v1/checkin',
-            dataType: 'json',
-    	    type: 'POST',
-            data: {
-              format: 'json',
-              content: content
-            },
-            success: function(response) {
-              console.log(response);
-            }
-          });
-          $('#checking').addClass('inactive').removeClass('active');
-          //setTimeout(function(){
-          //    $('#checking').addClass('inactive')
-          //      .removeClass('active');
-          //  }, 1000)
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <div class="ui form">
-      <div class="field">
-        <label><h3>签到内容</h3></label>
-        <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
-      </div>
-    </div>
-    <div id="label">
-    <a class="ui red tag label">红标签<i class="delete icon"></i></a>
-    <a class="ui green tag label">绿标签<i class="delete icon"></i></a>
-    <a class="ui yellow tag label">黄标签<i class="delete icon"></i></a>
-    </div>
-    <div class="ui right labeled left icon input">
-      <i class="tags icon"></i>
-      <input type="text" placeholder="输入标签">
-      <a class="ui tag label">添加标签</a>
-    </div>
-    <br/>
-    <div class="ui center aligned container">
-      <button id="checkin" class="ui green button">签到</button>
-      <div id="checking" class="ui inactive inverted dimmer">
-        <div class="ui medium text loader">签到中</div>
-      </div>
-    </div>
-    <br/>
-    <style>
-      .ui.form {
-        margin: 10px;
-      }
-      .ui.input{
-        margin: 10px;
-      }
-      #label{
-        margin-left: 10px;
-      }
-  </style>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" ></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript">
+            $(document).ready(function(){
+                //req = { id: "1" }
+                //$.get('http://localhost:8089/v1/checkin', req, function(data) {
+                //    //$('#dictionary').html(data);
+                //    console.log(data)
+                //});
+                $.ajax({
+                    url: 'http://127.0.0.1:8089/v1/checkin',
+                    dataType: 'jsonp',
+                    //type: 'POST',
+                    data: {
+                        id: '1'
+                    },
+                    success: function(res) {
+                        console.log(res.data);
+                        var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
+                        var sorted = _.sortBy(res.data, ['Timestamp'])
+                        console.log(sorted)
+                        for(var i = sorted.length - 1; i >= 0; i --) {
+                            var c = sorted[i]
+                            var date = c.CreateYear + '年' + c.CreateMonth + '月' + c.CreateDay + '日' + ' ' + c.CreateHour + ":" + c.CreateMin + ":" + c.CreateSec;
+                            var html = tmpl({'content': c.Content, 'date': date})
+                            //console.log(html)
+                            $('#container').append($(html));
+                        }
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <br/>
+        <div id="container" class="ui container">
+        </div>
+    </body>
 </html>
