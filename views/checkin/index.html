@@ -9,23 +9,28 @@
     <script type="text/javascript">
       $(document).ready(function(){
         $('#checkin').click(function() {
-          $('#checking').removeClass('inactive');
+          $('#checking').removeClass('inactive').addClass('active');
+          var content = $('#chkcnt').val()
+          console.log(content)
           //doing upload data
-          $('#checking').addClass('active');
-        });
-        $.ajax({
-          //url: 'http://ip-api.com/json',
-          url: 'http://10.202.240.252:8088/ping',
-          dataType: 'jsonp',
-          data: {
-            format: 'json'
-          },
-          //data: {
-          //  title: $('#title').val()
-          //},
-          success: function(data) {
-            console.log(data);
-          }
+          $.ajax({
+            //url: 'http://ip-api.com/json',
+            url: 'http://10.202.240.252:8089/v1/checkin',
+            dataType: 'json',
+    	    type: 'POST',
+            data: {
+              format: 'json',
+              content: content
+            },
+            success: function(response) {
+              console.log(response);
+            }
+          });
+          $('#checking').addClass('inactive').removeClass('active');
+          //setTimeout(function(){
+          //    $('#checking').addClass('inactive')
+          //      .removeClass('active');
+          //  }, 1000)
         });
       });
     </script>
@@ -34,7 +39,7 @@
     <div class="ui form">
       <div class="field">
         <label><h3>签到内容</h3></label>
-        <textarea placeholder="点此输入签到内容"></textarea>
+        <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
       </div>
     </div>
     <div id="label">
