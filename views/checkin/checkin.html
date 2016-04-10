@@ -8,10 +8,12 @@
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
     <script type="application/javascript">
       $(document).ready(function(){
+        $('.ui.message').hide();
         $('#checkin').click(function() {
+          $('#chkcnt').attr('readonly', 'readonly');
           $('#checking').removeClass('inactive').addClass('active');
-          var content = $('#chkcnt').val()
-          console.log(content)
+          var content = $('#chkcnt').val();
+          console.log(content);
           //doing upload data
           $.ajax({
             //url: 'http://ip-api.com/json',
@@ -19,18 +21,25 @@
             dataType: 'json',
     	    type: 'POST',
             data: {
-              format: 'json',
+              //format: 'json',
               content: content
             },
-            success: function(response) {
-              console.log(response);
+            success: function (res) {
+              console.log(res);
+              window.location.href = 'index.html'
+              $('.ui.success.message').show();
+            },
+            error: function (res) {
+              console.log(res);
+              $('.ui.error.message').show();
+              setTimeout(function(){
+                  $('.ui.error.message').hide();
+              }, 3000)
+              //window.location.href = 'index.html';
             }
           });
           $('#checking').addClass('inactive').removeClass('active');
-          //setTimeout(function(){
-          //    $('#checking').addClass('inactive')
-          //      .removeClass('active');
-          //  }, 1000)
+          $('#chkcnt').removeAttr('readonly');
         });
       });
     </script>
@@ -57,6 +66,18 @@
       <button id="checkin" class="ui green button">签到</button>
       <div id="checking" class="ui inactive inverted dimmer">
         <div class="ui medium text loader">签到中</div>
+      </div>
+      <div class="ui success message">
+        <div class="content">
+          <div class="header">签到成功!马上跳转到个人首页!</div>
+          <!-- <p>内容描述</p> -->
+        </div>
+      </div>
+      <div class="ui error message">
+        <div class="content">
+          <div class="header">签到失败!请重试!</div>
+          <!-- <p>内容描述</p> -->
+        </div>
       </div>
     </div>
     <br/>
