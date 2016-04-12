@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" ></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript">
+            $(document).ready(function(){
+                $('#checkin_status').hide();
+                $('#checkin').click(function() {
+                    $('#checkin').hide();
+                    $('#checkin_status').show();
+                    $('#checkin_days').text("3");
+                    window.location.href = '/checkin/checkin.html';
+                });
+                $('#checkin_status').click(function() {
+                    window.location.href = '/checkin/index.html';
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <br/>
+        <div id="container" class="ui center aligned container">
+        </div>
+        <div class="ui center aligned basic segment">
+            <div class="ui tiny centered circular image">
+                <img class="ui tiny centered circular image" src="http://www.semantic-ui-cn.com/images/wireframe/square-image.png">
+                <!--
+                <a class="ui bottom circular corner label">
+                    <i class="edit icon"></i>
+                </a>
+                -->
+            </div>
+            <br/>
+            <br/>
+            <div class="ui center aligned container">
+                <p> Hi, <b id="username">Jim Mar</b></p>
+            </div>
+            <br/>
+            <div class="ui center aligned container">
+                <div id="checkin" class="ui basic button">
+                    <i class="icon edit"></i>
+                    立即签到
+                </div>
+                <div id="checkin_status" class="ui basic button">
+                    <i class="checkmark box icon"></i>
+                    您已经连续签到<span id="checkin_days"></span>天
+                </div>
+            </div>
+        </div>
+        <br/>
+    </body>
+</html>
