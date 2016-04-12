@@ -1,3 +1,4 @@
 *node_modules*
 static/semantic/*
 static/semantic*
+*.swp
