@@ -9,15 +9,16 @@
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                $('#checkin_status').hide();
+                //$('#checkin_status').hide();
+                //$('#checkin').hide();
                 $('#checkin').click(function() {
-                    $('#checkin').hide();
-                    $('#checkin_status').show();
-                    $('#checkin_days').text("3");
-                    window.location.href = '/checkin/checkin.html';
+                    //$('#checkin').hide();
+                    //$('#checkin_status').show();
+                    //$('#checkin_days').text("3");
+                    window.location.href = '../checkin/checkin.html';
                 });
                 $('#checkin_status').click(function() {
-                    window.location.href = '/checkin/index.html';
+                    window.location.href = '../checkin/index.html';
                 });
             });
         </script>

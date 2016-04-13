@@ -14,35 +14,43 @@
                 //    //$('#dictionary').html(data);
                 //    console.log(data)
                 //});
-                $.ajax({
-                    url: 'http://127.0.0.1:8089/v1/checkin',
-                    dataType: 'jsonp',
-                    //type: 'POST',
-                    data: {
-                        uid: '1'
-                    },
-                    success: function(res) {
-                        //console.log(res.data);
-                        var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
-                        var sorted = _.sortBy(res.data, ['timestamp'])
-                        console.log(sorted)
-                        for(var i = sorted.length - 1; i >= 0; i --) {
-                            var c = sorted[i]
-                            if(c.create_hour < 10){
-                                c.create_hour = '0' + c.create_hour
+                var card_tmpl = '';
+                $.get('../templates/card-checkin.tmpl', function(data) {
+                    card_tmpl = data;
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'jsonp',
+                        //type: 'POST',
+                        data: {
+                            uid: '1'
+                        },
+                        success: function(res) {
+                            //console.log(res.data);
+                            console.log(card_tmpl);
+                            //var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
+                            var tmpl = _.template(card_tmpl);
+                            var sorted = _.sortBy(res.data, ['timestamp']);
+                            console.log(sorted)
+                            for(var i = sorted.length - 1; i >= 0; i --) {
+                                var c = sorted[i]
+                                if(c.create_hour < 10){
+                                    c.create_hour = '0' + c.create_hour
+                                }
+                                if(c.create_min < 10){
+                                    c.create_min = '0' + c.create_min
+                                }
+                                if(c.create_Sec < 10){
+                                    c.create_Sec = '0' + c.create_Sec
+                                }
+                                var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
+                                var html = tmpl({'content': c.content, 'date': date});
+                                //console.log(html);
+                                $('#container').append($(html));
                             }
-                            if(c.create_min < 10){
-                                c.create_min = '0' + c.create_min
-                            }
-                            if(c.create_Sec < 10){
-                                c.create_Sec = '0' + c.create_Sec
-                            }
-                            var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
-                            var html = tmpl({'content': c.content, 'date': date})
-                            //console.log(html)
-                            $('#container').append($(html));
                         }
-                    }
+                    });
+                }).fail(function(jqXHR) {
+                    $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
                 });
             });
         </script>
