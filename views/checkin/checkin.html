@@ -1,99 +1,100 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
-      <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-      <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
-      <script type="application/javascript">
-          $(document).ready(function(){
-              $('.ui.message').hide();
-              $('#checkin').click(function() {
-                  $('#chkcnt').attr('readonly', 'readonly');
-                  $('#checking').removeClass('inactive').addClass('active');
-                  var content = $('#chkcnt').val();
-                  console.log(content);
-                  //doing upload data
-                  $.ajax({
-                      // url: 'http://ip-api.com/json'
-                      url: 'http://127.0.0.1:8089/v1/checkin',
-                      dataType: 'json',
-                      type: 'POST',
-                      data: {
-                          //format: 'json',
-                          content: content
-                      },
-                      success: function (res) {
-                          console.log(res);
-                          window.location.href = '../user/index.html'
-                          $('.ui.success.message').show();
-                      },
-                      error: function (res) {
-                          console.log(res);
-                          $('.ui.error.message').show();
-                          setTimeout(function(){
-                              $('.ui.error.message').hide();
-                          }, 3000)
-                          //window.location.href = '../user/index.html';
-                      }
-                  });
-                  $('#checking').addClass('inactive').removeClass('active');
-                  $('#chkcnt').removeAttr('readonly');
-              });
-          });
-      </script>
-    </head>
-    <body>
-        <div class="ui form">
-            <div class="field">
-                <label><h3>签到内容</h3></label>
-                <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
-            </div>
-        </div>
-        <div id="label">
-            <a class="ui red tag label">红标签<i class="delete icon"></i></a>
-            <a class="ui green tag label">绿标签<i class="delete icon"></i></a>
-            <a class="ui yellow tag label">黄标签<i class="delete icon"></i></a>
-        </div>
-        <div class="ui right labeled left icon input">
-            <i class="tags icon"></i>
-            <input type="text" placeholder="输入标签">
-            <a class="ui tag label">添加标签</a>
-        </div>
-        <br/>
-        <div class="ui center aligned container">
-            <div id="checkin" class="ui basic button">
-                <i class="icon edit"></i>
-                签到
-            </div>
-            <div id="checking" class="ui inactive inverted dimmer">
-                <div class="ui medium text loader">签到中</div>
-            </div>
-            <div class="ui success message">
-                <div class="content">
-                    <div class="header">签到成功!马上跳转到个人首页!</div>
-                    <!-- <p>内容描述</p> -->
-                </div>
-            </div>
-            <div class="ui error message">
-                <div class="content">
-                    <div class="header">签到失败!请重试!</div>
-                    <!-- <p>内容描述</p> -->
-                </div>
-            </div>
-        </div>
-        <br/>
-    </body>
-    <style>
-        .ui.form {
-            margin: 10px;
-        }
-        .ui.input{
-            margin: 10px;
-        }
-        #label{
-            margin-left: 10px;
-        }
-    </style>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="../auth/auth.js"></script>
+        <script type="application/javascript">
+            $(document).ready(function(){
+                $('.ui.message').hide();
+                $('#checkin').click(function() {
+                    $('#chkcnt').attr('readonly', 'readonly');
+                    $('#checking').removeClass('inactive').addClass('active');
+                    var content = $('#chkcnt').val();
+                    console.log(content);
+                    //doing upload data
+                    $.ajax({
+                        // url: 'http://ip-api.com/json'
+                        url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            //format: 'json',
+                            content: content
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            window.location.href = '../user/index.html'
+                            $('.ui.success.message').show();
+                        },
+                        error: function (res) {
+                            console.log(res);
+                            $('.ui.error.message').show();
+                            setTimeout(function(){
+                                $('.ui.error.message').hide();
+                            }, 3000)
+                            //window.location.href = '../user/index.html';
+                        }
+                    });
+                    $('#checking').addClass('inactive').removeClass('active');
+                    $('#chkcnt').removeAttr('readonly');
+                });
+            });
+        </script>
+      </head>
+      <body>
+          <div class="ui form">
+              <div class="field">
+                  <label><h3>签到内容</h3></label>
+                  <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
+              </div>
+          </div>
+          <div id="label">
+              <a class="ui red tag label">红标签<i class="delete icon"></i></a>
+              <a class="ui green tag label">绿标签<i class="delete icon"></i></a>
+              <a class="ui yellow tag label">黄标签<i class="delete icon"></i></a>
+          </div>
+          <div class="ui right labeled left icon input">
+              <i class="tags icon"></i>
+              <input type="text" placeholder="输入标签">
+              <a class="ui tag label">添加标签</a>
+          </div>
+          <br/>
+          <div class="ui center aligned container">
+              <div id="checkin" class="ui basic button">
+                  <i class="icon edit"></i>
+                  签到
+              </div>
+              <div id="checking" class="ui inactive inverted dimmer">
+                  <div class="ui medium text loader">签到中</div>
+              </div>
+              <div class="ui success message">
+                  <div class="content">
+                      <div class="header">签到成功!马上跳转到个人首页!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+              <div class="ui error message">
+                  <div class="content">
+                      <div class="header">签到失败!请重试!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+          </div>
+          <br/>
+      </body>
+      <style>
+          .ui.form {
+              margin: 10px;
+          }
+          .ui.input{
+              margin: 10px;
+          }
+          #label{
+              margin-left: 10px;
+          }
+      </style>
 </html>

@@ -7,6 +7,8 @@
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" ></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+        <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
                 //req = { id: "1" }
@@ -26,7 +28,7 @@
                         },
                         success: function(res) {
                             //console.log(res.data);
-                            console.log(card_tmpl);
+                            //console.log(card_tmpl);
                             //var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
                             var tmpl = _.template(card_tmpl);
                             var sorted = _.sortBy(res.data, ['timestamp']);
@@ -39,8 +41,8 @@
                                 if(c.create_min < 10){
                                     c.create_min = '0' + c.create_min
                                 }
-                                if(c.create_Sec < 10){
-                                    c.create_Sec = '0' + c.create_Sec
+                                if(c.create_sec < 10){
+                                    c.create_sec = '0' + c.create_sec
                                 }
                                 var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
                                 var html = tmpl({'content': c.content, 'date': date});
