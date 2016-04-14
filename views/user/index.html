@@ -29,16 +29,12 @@
         <div id="container" class="ui center aligned container">
         </div>
         <div class="ui center aligned basic segment">
-            <div class="ui tiny centered circular image">
-                <img class="ui tiny centered circular image" src="http://www.semantic-ui-cn.com/images/wireframe/square-image.png">
-                <!--
-                <a class="ui bottom circular corner label">
-                    <i class="edit icon"></i>
-                </a>
-                -->
+            <div class="ui tiny centered circular image tidy-avatar">
+                <img src="http://www.semantic-ui-cn.com/images/wireframe/square-image.png">
+                <div class="ui tiny tidy-edit-avatar">
+                    <i class="large grey photo link icon"></i>
+                </div>
             </div>
-            <br/>
-            <br/>
             <div class="ui center aligned container">
                 <p> Hi, <b id="username">Jim Mar</b></p>
             </div>
@@ -56,4 +52,14 @@
         </div>
         <br/>
     </body>
+    <style>
+        .tidy-avatar {
+            position:relative
+        }
+        .tidy-edit-avatar {
+            position:absolute;
+            right:-5px;
+            bottom:-1px
+        }
+    </style>
 </html>
