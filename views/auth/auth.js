@@ -26,3 +26,4 @@ function clear_auth() {
 }
 
 check_auth();
+
