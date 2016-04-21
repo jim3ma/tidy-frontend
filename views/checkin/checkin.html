@@ -6,6 +6,8 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
@@ -17,17 +19,16 @@
                     console.log(content);
                     //doing upload data
                     $.ajax({
-                        // url: 'http://ip-api.com/json'
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'json',
                         type: 'POST',
                         data: {
-                            //format: 'json',
+                            auth_token: Cookies.get('auth_token'),
                             content: content
                         },
                         success: function (res) {
                             console.log(res);
-                            window.location.href = '../user/index.html'
+                            window.location.href = '../user/index.html';
                             $('.ui.success.message').show();
                         },
                         error: function (res) {

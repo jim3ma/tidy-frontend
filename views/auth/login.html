@@ -7,10 +7,24 @@
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" ></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                Cookies.set('auth', { id: '1', last_checkin: { year : 2016, month: 3, day:3 } });
+                $.ajax({
+                    url: 'http://127.0.0.1:8089/v1/user/login',
+                    dataType: 'json',
+                    //type: 'POST',
+                    data: {
+                        username: 'abc',
+                        password: 'xyz'
+                    },
+                    success: function(res) {
+                        console.log(res);
+                        Cookies.set('auth_token', res.auth_token);
+                        Cookies.set('user_info', res.user_info);
+                    }
+                });
             });
         </script>
     </head>

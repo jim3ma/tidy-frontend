@@ -7,15 +7,41 @@
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" ></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+        <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                //$('#checkin_status').hide();
-                //$('#checkin').hide();
+                $('#checkin_status').hide();
+                $('#checkin').hide();
+                $.ajax({
+                    url: 'http://127.0.0.1:8089/v1/user/info',
+                    dataType: 'json',
+                    //type: 'POST',
+                    data: {
+                        auth_token: Cookies.get('auth_token')
+                    },
+                    success: function(res) {
+                        console.log(res);
+                        Cookies.set('user_info', res.user_info);
+                        d = new Date();
+                        if(res.user_info.last_checkin.create_year == d.getFullYear() &&
+                                res.user_info.last_checkin.create_month == d.getMonth() + 1 &&
+                                res.user_info.last_checkin.create_day == d.getDate()){
+                            // already checkin today
+                            $('#checkin_status').show();
+                            //$('#checkin').hide();
+                            $('#checkin_days').text(res.user_info.continuous);
+                        } else {
+                            // not yet checkin tody
+                            //$('#checkin_status').hide();
+                            $('#checkin').show();
+                        }
+                    }
+                })
                 $('#checkin').click(function() {
-                    //$('#checkin').hide();
-                    //$('#checkin_status').show();
-                    //$('#checkin_days').text("3");
+                    //user_info = Cookies.getJSON('user_info');
+                    //$('#checkin_days').text(user_info.continuous);
                     window.location.href = '../checkin/checkin.html';
                 });
                 $('#checkin_status').click(function() {
