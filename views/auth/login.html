@@ -11,27 +11,182 @@
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                $.ajax({
-                    url: 'http://127.0.0.1:8089/v1/user/login',
-                    dataType: 'json',
-                    //type: 'POST',
-                    data: {
-                        username: 'abc',
-                        password: 'xyz'
-                    },
-                    success: function(res) {
-                        console.log(res);
-                        Cookies.set('auth_token', res.auth_token);
-                        Cookies.set('user_info', res.user_info);
+                $('.ui.form').form({
+                    fields: {
+                        email: {
+                            identifier  : 'email',
+                            rules: [
+                                {
+                                    type   : 'empty',
+                                    prompt : '请输入用户名或者E-mail地址'
+                                },
+                                //{
+                                //    type   : 'email',
+                                //    prompt : '请输入正确的邮箱地址'
+                                //}
+                            ]
+                        },
+                        password: {
+                            identifier  : 'password',
+                            rules: [
+                                {
+                                    type   : 'empty',
+                                    prompt : '请输入密码'
+                                },
+                                {
+                                    type   : 'length[6]',
+                                    prompt : '密码至少6位'
+                                }
+                            ]
+                        }
                     }
+                });
+                $('#login').click(function () {
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/login',
+                        dataType: 'json',
+                        //type: 'POST',
+                        data: {
+                            username: $('#email').val(),
+                            password: $('#password').val()
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            Cookies.set('auth_token', res.auth_token);
+                            Cookies.set('user_info', res.user_info);
+                            window.location.href = '../user/index.html';
+                        },
+                        error: function () {
+                            console.log('error login')
+                        }
+                    });
+                });
+                $('#start_register').click(function () {
+                    $('.ui.stardand.modal').modal('show');
+                });
+                $('#register').click(function () {
+                    username = $('#new_username').val();
+                    email = $('#new_email').val();
+                    password = $('#new_password').val();
+                    password_confirm = $('#new_password_confirm').val();
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/register',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            username: username,
+                            password: password,
+                            email: email
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            Cookies.set('auth_token', res.auth_token);
+                            Cookies.set('user_info', res.user_info);
+                            window.location.href = '../user/index.html';
+                        },
+                        error: function () {
+                            console.log('error login')
+                        }
+                    });
+                    console.log('test')
                 });
             });
         </script>
+        <style type="text/css">
+            /*body {
+                background-color: #DADADA;
+            }*/
+            body > .grid {
+                height: 100%;
+            }
+            .image {
+                margin-top: -100px;
+            }
+            .column {
+                max-width: 350px;
+            }
+        </style>
     </head>
     <body>
-        <br/>
-        <div id="container" class="ui container">
+    <div class="ui middle aligned center aligned grid">
+        <div class="column">
+            <h2 class="ui teal image header">
+                <img src="http://www.semantic-ui-cn.com/images/wireframe/square-image.png" class="image">
+                <div class="content">
+                    登录Tidy
+                </div>
+            </h2>
+            <form class="ui large form">
+                <div class="ui stacked segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input id="email" type="text" name="email" placeholder="用户名或者E-mail地址">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            <input id="password" type="password" name="password" placeholder="密码">
+                        </div>
+                    </div>
+                    <div id="login" class="ui fluid large teal submit button">登录</div>
+                    <br/>
+                    <div class="ui">其他登录方式</div>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+            <div class="ui message">
+                第一次访问Tidy? 那<a id="start_register" href="#">赶紧注册</a>吧
+            </div>
         </div>
-        <br/>
+    </div>
+    <div class="ui stardand modal hidden">
+        <i class="close icon"></i>
+        <div class="header">
+            新用户注册
+        </div>
+        <div class="content">
+            <form class="ui large form">
+                <div class="ui stacked segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input id="new_username" type="text" name="username" placeholder="用户名">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="mail icon"></i>
+                            <input id="new_email" type="text" name="email" placeholder="E-mail地址">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            <input id="new_password" type="password" name="password" placeholder="密码">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="undo icon"></i>
+                            <input id="new_password_confirm" type="password" name="password" placeholder="确认密码">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="ui negative black button right labeled icon button">
+                取消
+                <i class="close icon"></i>
+            </div>
+            <div id="register" class="ui green right labeled icon button">
+                注册
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
     </body>
 </html>

@@ -13,7 +13,7 @@
         <script type="application/javascript">
             $(document).ready(function(){
                 $('#checkin_status').hide();
-                $('#checkin').hide();
+                $('#checkin').show();
                 $.ajax({
                     url: 'http://127.0.0.1:8089/v1/user/info',
                     dataType: 'json',
@@ -23,15 +23,19 @@
                     },
                     success: function(res) {
                         console.log(res);
-                        Cookies.set('user_info', res.user_info);
-                        d = new Date();
-                        if(res.user_info.last_checkin.create_year == d.getFullYear() &&
-                                res.user_info.last_checkin.create_month == d.getMonth() + 1 &&
-                                res.user_info.last_checkin.create_day == d.getDate()){
-                            // already checkin today
-                            $('#checkin_status').show();
-                            //$('#checkin').hide();
-                            $('#checkin_days').text(res.user_info.continuous);
+                        user = res.user_info;
+                        Cookies.set('user_info', user);
+                        date = new Date();
+                        $('#username').text(user.username);
+                        if(user['last_checkin']){
+                            if(user.last_checkin.create_year == date.getFullYear() &&
+                                user.last_checkin.create_month == date.getMonth() + 1 &&
+                                user.last_checkin.create_day == date.getDate()){
+                                // already checkin today
+                                $('#checkin_status').show();
+                                //$('#checkin').hide();
+                                $('#checkin_days').text(user.continuous);
+                            }
                         } else {
                             // not yet checkin tody
                             //$('#checkin_status').hide();
