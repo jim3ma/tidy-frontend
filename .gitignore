@@ -2,3 +2,4 @@
 static/semantic/*
 static/semantic*
 *.swp
+.idea/*
