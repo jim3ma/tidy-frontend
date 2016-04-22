@@ -6,7 +6,7 @@ ENV NGINX_HTML_DIR /usr/share/nginx/html/
 ENV TIDY_URL tidy.com
 ENV HTTP http
 
-COPY views/index.html ${NGINX_HTML_DIR}/auth/
+COPY views/index.html ${NGINX_HTML_DIR}/
 COPY views/auth/* ${NGINX_HTML_DIR}/auth/
 COPY views/checkin/* ${NGINX_HTML_DIR}/checkin/
 COPY views/static/* ${NGINX_HTML_DIR}/static/
