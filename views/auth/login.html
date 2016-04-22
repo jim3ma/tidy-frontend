@@ -44,6 +44,8 @@
                     }
                 });
                 $('#login').click(function () {
+                    //ret = $('.ui.form').form('validate form');
+                    //console.log(ret);
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/user/login',
                         dataType: 'json',
