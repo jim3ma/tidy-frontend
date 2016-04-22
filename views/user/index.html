@@ -32,8 +32,8 @@
                                 user.last_checkin.create_month == date.getMonth() + 1 &&
                                 user.last_checkin.create_day == date.getDate()){
                                 // already checkin today
+                                $('#checkin').hide();
                                 $('#checkin_status').show();
-                                //$('#checkin').hide();
                                 $('#checkin_days').text(user.continuous);
                             }
                         } else {
@@ -68,7 +68,7 @@
             <br/>
             <br/>
             <div class="ui center aligned container">
-                <p> Hi, <b id="username">Jim Mar</b></p>
+                <p> Hi, <b id="username"></b></p>
             </div>
             <br/>
             <div class="ui center aligned container">
@@ -82,7 +82,7 @@
                 </div>
             </div>
         </div>
-        <div id="menu" class="ui bottom fixed inverted four item labeled icon menu grid">
+        <div id="menu" class="ui small bottom fixed inverted four item labeled icon menu">
            <a class="green item">
                 <i class="star icon"></i>
                 收藏
