@@ -1,6 +1,7 @@
 FROM nginx:1.9-alpine
 
 MAINTAINER Jim Mar <majinjing3@gmail.com>
+ENV CREATE_DATE 2016-04-23
 
 ENV NGINX_HTML_DIR /usr/share/nginx/html/
 ENV TIDY_URL tidy.com
