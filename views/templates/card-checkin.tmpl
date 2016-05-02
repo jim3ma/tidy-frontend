@@ -1,4 +1,9 @@
 <div class="ui fluid card">
+    <% if(img != "") { %>
+    <div class="ui image">
+        <img src="<%= imgurl %><%= img %>">
+    </div>
+    <% } %>
     <div class="content">
         <div class="description">
             <p><%= content %></p>

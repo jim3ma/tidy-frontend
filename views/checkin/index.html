@@ -18,6 +18,7 @@
                 //    console.log(data)
                 //});
                 auth_token = Cookies.get('auth_token');
+                Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
                 var card_tmpl = '';
                 $.get('../templates/card-checkin.tmpl', function(data) {
                     card_tmpl = data;
@@ -48,7 +49,12 @@
                                     c.create_sec = '0' + c.create_sec
                                 }
                                 var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
-                                var html = tmpl({'content': c.content, 'date': date});
+                                var html = tmpl({
+                                    'content': c.content,
+                                    'date': date,
+                                    'imgurl': Cookies.get('imgurl'),
+                                    'img': c.images[0]
+                                });
                                 //console.log(html);
                                 $('#container').append($(html));
                             }

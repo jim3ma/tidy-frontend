@@ -12,7 +12,10 @@
         <script type="application/javascript">
             $(document).ready(function(){
                 $('.ui.message').hide();
-                //$('#file').hide();
+                $('#file').hide();
+                $('#img').hide();
+                Cookies.set('img', '');
+                Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
                     $('#checking').removeClass('inactive').addClass('active');
@@ -25,7 +28,8 @@
                         type: 'POST',
                         data: {
                             auth_token: Cookies.get('auth_token'),
-                            content: content
+                            content: content,
+                            img: Cookies.get('img')
                         },
                         success: function (res) {
                             console.log(res);
@@ -45,8 +49,15 @@
                     $('#chkcnt').removeAttr('readonly');
                 });
                 $('#upload').click(function () {
+                    $('#file').click();
+                    //$("form").submit();
+                    //console.log('');
+                });
+                $('#file').change(function (evt) {
+                    //evt.preventDefault();
+                    console.log('file select clicked');
                     $("form").submit();
-                    console.log('');
+                    //setInterval( function () { } , 1000 );
                 });
                 $("form").submit(function(evt){
                     evt.preventDefault();
@@ -61,11 +72,12 @@
                         contentType: false,
                         enctype: 'multipart/form-data',
                         processData: false,
-                        success: function (response) {
-                            alert(response);
+                        success: function (res) {
+                            Cookies.set('img', res)
+                            console.log('upload success: ' + res);
+                            $('#img').show().attr('src', Cookies.get('imgurl') + res)
                         }
                     });
-
                     return false;
                 });
             });
@@ -76,6 +88,9 @@
               <div class="field">
                   <label><h3>签到内容</h3></label>
                   <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
+              </div>
+              <div>
+                  <img id="img" src="">
               </div>
           </div>
           <!--<div id="label">
