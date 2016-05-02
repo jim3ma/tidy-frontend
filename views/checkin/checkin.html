@@ -12,6 +12,7 @@
         <script type="application/javascript">
             $(document).ready(function(){
                 $('.ui.message').hide();
+                //$('#file').hide();
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
                     $('#checking').removeClass('inactive').addClass('active');
@@ -43,6 +44,30 @@
                     $('#checking').addClass('inactive').removeClass('active');
                     $('#chkcnt').removeAttr('readonly');
                 });
+                $('#upload').click(function () {
+                    $("form").submit();
+                    console.log('');
+                });
+                $("form").submit(function(evt){
+                    evt.preventDefault();
+                    var formData = new FormData($(this)[0]);
+                    console.log(formData);
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                        type: 'POST',
+                        data: formData,
+                        //async: false,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        success: function (response) {
+                            alert(response);
+                        }
+                    });
+
+                    return false;
+                });
             });
         </script>
       </head>
@@ -65,6 +90,10 @@
           </div>
           <br/>-->
           <div class="ui center aligned container">
+              <div id="upload" class="ui basic button">
+                  <i class="icon photo"></i>
+                  上图
+              </div>
               <div id="checkin" class="ui basic button">
                   <i class="icon edit"></i>
                   签到
@@ -85,6 +114,9 @@
                   </div>
               </div>
           </div>
+          <form>
+              <input id="file" type="file" name="file" />
+          </form>
           <br/>
       </body>
       <style>
