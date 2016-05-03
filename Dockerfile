@@ -4,10 +4,16 @@ MAINTAINER Jim Mar <majinjing3@gmail.com>
 ENV CREATE_DATE 2016-04-23
 
 ENV NGINX_HTML_DIR /usr/share/nginx/html/
-ENV TIDY_URL tidy.com
+ENV TIDY_URL ctidy.com:8089
 ENV HTTP http
 
-ADD views/* ${NGINX_HTML_DIR}/
+#ADD views/* ${NGINX_HTML_DIR}/
+COPY views/index.html ${NGINX_HTML_DIR}/
+COPY views/auth/* ${NGINX_HTML_DIR}/auth/
+COPY views/checkin/* ${NGINX_HTML_DIR}/checkin/
+COPY views/static/* ${NGINX_HTML_DIR}/static/
+COPY views/templates/* ${NGINX_HTML_DIR}/templates/
+COPY views/user/* ${NGINX_HTML_DIR}/user/
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx.tidy.default.conf /etc/nginx/conf.d/default.conf
 
