@@ -9,6 +9,7 @@ ENV HTTP http
 
 #ADD views/* ${NGINX_HTML_DIR}/
 COPY views/index.html ${NGINX_HTML_DIR}/
+COPY views/favicon.ico ${NGINX_HTML_DIR}/
 COPY views/auth/* ${NGINX_HTML_DIR}/auth/
 COPY views/checkin/* ${NGINX_HTML_DIR}/checkin/
 COPY views/static/* ${NGINX_HTML_DIR}/static/
