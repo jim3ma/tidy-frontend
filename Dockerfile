@@ -15,6 +15,7 @@ COPY views/checkin/* ${NGINX_HTML_DIR}/checkin/
 COPY views/static/* ${NGINX_HTML_DIR}/static/
 COPY views/templates/* ${NGINX_HTML_DIR}/templates/
 COPY views/user/* ${NGINX_HTML_DIR}/user/
+COPY views/logo/* ${NGINX_HTML_DIR}/logo/
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx.tidy.default.conf /etc/nginx/conf.d/default.conf
 
