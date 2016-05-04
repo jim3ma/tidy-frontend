@@ -7,17 +7,19 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
         <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
                 $('.ui.message').hide();
+                $('#row2').hide();
                 $('#file').hide();
                 //$('#imgdiv').hide();
                 var imgs = new Array();
-                var imgcnt = 0;
-                Cookies.set('imgs', '');
+                var imgcnt = -1;
+                //Cookies.set('imgs', '');
                 Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
@@ -25,6 +27,15 @@
                     var content = $('#chkcnt').val();
                     console.log(content);
                     //doing upload data
+                    img = '';
+                    console.log(imgs);
+                    if(imgcnt != -1){
+                        img = imgs[0].guid + "." + imgs[0].ext;
+                        for(i = 1; i <= imgcnt; i++){
+                            img += '|' + imgs[i].guid + "." + imgs[i].ext;
+                        }
+                    }
+                    console.log('img: ' + img)
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'json',
@@ -32,7 +43,7 @@
                         data: {
                             auth_token: Cookies.get('auth_token'),
                             content: content,
-                            img: Cookies.get('img')
+                            img: img
                         },
                         success: function (res) {
                             console.log(res);
@@ -64,11 +75,14 @@
                 });
                 $("form").submit(function(evt){
                     evt.preventDefault();
+                    if(imgcnt + 2 > 4){
+                        return;
+                    }
                     var formData = new FormData($(this)[0]);
-                    var tmpl =  '<div id="<%= divid %>" class="ui small rounded image upload-img">' +
+                    var tmpl =  '<div id="<%= divid %>" class="ui column small rounded image upload-img">' +
                                   '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
                                   '<div class="ui upload-img-del">' +
-                                    '<i class="large grey remove circle link icon"></i>' +'
+                                    '<i class="large grey remove circle link icon"></i>' +
                                   '</div>' +
                                 '</div>';
                     var _tmpl = _.template(tmpl);
@@ -83,16 +97,27 @@
                         enctype: 'multipart/form-data',
                         processData: false,
                         success: function (res) {
+                            imgcnt ++ ;
                             imgs[imgcnt] = {
                                 'guid': res.guid,
                                 'ext': res.ext
                             };
-                            imgcnt ++ ;
                             //Cookies.set('imgs', res);
-                            console.log('upload success: ' + res);
-                            $('#imgdiv').show();
-                            $('#img').attr('src', Cookies.get('imgurl_prefix') +
-                                    res.guid + '.' + res.ext);
+                            console.log(res);
+                            console.log(imgs);
+                            divid = 'div' + imgs[imgcnt].guid;
+                            imgid = 'img' + imgs[imgcnt].guid;
+                            imgurl = Cookies.get('imgurl_prefix') + imgs[imgcnt].guid + '.' + imgs[imgcnt].ext;
+                            rowid = '#row1';
+                            if(imgcnt + 1 > 2){
+                                rowid = '#row2';
+                            }
+                            $(rowid).append(_tmpl({
+                                'divid': divid,
+                                'imgid': imgid,
+                                'imgurl': imgurl
+                            })).show();
+                            $('#' + divid).show();
                         }
                     });
                     return false;
@@ -105,6 +130,12 @@
               <div class="field">
                   <label><h3>签到内容</h3></label>
                   <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
+              </div>
+              <div id="cigrid" class="ui equal width grid" style="margin: -5px;">
+                  <div id="row1" class="row">
+                  </div>
+                  <div id="row2" class="row">
+                  </div>
               </div>
           </div>
           <!--<div id="label">
@@ -163,8 +194,8 @@
           }
           .upload-img-del {
               position:absolute;
-              right:-5px;
-              bottom:-1px
+              right:-1px;
+              bottom:-6px
           }
       </style>
 </html>
