@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+        <title>签到</title>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
         <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
@@ -13,9 +14,11 @@
             $(document).ready(function(){
                 $('.ui.message').hide();
                 $('#file').hide();
-                $('#img').hide();
-                Cookies.set('img', '');
-                Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
+                //$('#imgdiv').hide();
+                var imgs = new Array();
+                var imgcnt = 0;
+                Cookies.set('imgs', '');
+                Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
                     $('#checking').removeClass('inactive').addClass('active');
@@ -62,6 +65,13 @@
                 $("form").submit(function(evt){
                     evt.preventDefault();
                     var formData = new FormData($(this)[0]);
+                    var tmpl =  '<div id="<%= divid %>" class="ui small rounded image upload-img">' +
+                                  '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
+                                  '<div class="ui upload-img-del">' +
+                                    '<i class="large grey remove circle link icon"></i>' +'
+                                  '</div>' +
+                                '</div>';
+                    var _tmpl = _.template(tmpl);
                     console.log(formData);
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/user/uploadimg',
@@ -73,9 +83,16 @@
                         enctype: 'multipart/form-data',
                         processData: false,
                         success: function (res) {
-                            Cookies.set('img', res)
+                            imgs[imgcnt] = {
+                                'guid': res.guid,
+                                'ext': res.ext
+                            };
+                            imgcnt ++ ;
+                            //Cookies.set('imgs', res);
                             console.log('upload success: ' + res);
-                            $('#img').show().attr('src', Cookies.get('imgurl') + res)
+                            $('#imgdiv').show();
+                            $('#img').attr('src', Cookies.get('imgurl_prefix') +
+                                    res.guid + '.' + res.ext);
                         }
                     });
                     return false;
@@ -84,13 +101,10 @@
         </script>
       </head>
       <body>
-          <div class="ui form">
+          <div id="ciform" class="ui form">
               <div class="field">
                   <label><h3>签到内容</h3></label>
                   <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
-              </div>
-              <div>
-                  <img id="img" src="">
               </div>
           </div>
           <!--<div id="label">
@@ -143,6 +157,14 @@
           }
           #label{
               margin-left: 10px;
+          }
+          .upload-img {
+              position:relative
+          }
+          .upload-img-del {
+              position:absolute;
+              right:-5px;
+              bottom:-1px
           }
       </style>
 </html>
