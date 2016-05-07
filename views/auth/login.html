@@ -12,38 +12,38 @@
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                $('.ui.form').form({
-                    fields: {
-                        email: {
-                            identifier  : 'email',
-                            rules: [
-                                {
-                                    type   : 'empty',
-                                    prompt : '请输入用户名或者E-mail地址'
-                                },
-                                //{
-                                //    type   : 'email',
-                                //    prompt : '请输入正确的邮箱地址'
-                                //}
-                            ]
-                        },
-                        password: {
-                            identifier  : 'password',
-                            rules: [
-                                {
-                                    type   : 'empty',
-                                    prompt : '请输入密码'
-                                },
-                                {
-                                    type   : 'length[6]',
-                                    prompt : '密码至少6位'
-                                }
-                            ]
-                        }
-                    },
-                    submit: function () {
-                    }
-                });
+                //$('.ui.form').form({
+                //    fields: {
+                //        email: {
+                //            identifier  : 'email',
+                //            rules: [
+                //                {
+                //                    type   : 'empty',
+                //                    prompt : '请输入用户名或者E-mail地址'
+                //                },
+                //                //{
+                //                //    type   : 'email',
+                //                //    prompt : '请输入正确的邮箱地址'
+                //                //}
+                //            ]
+                //        },
+                //        password: {
+                //            identifier  : 'password',
+                //            rules: [
+                //                {
+                //                    type   : 'empty',
+                //                    prompt : '请输入密码'
+                //                },
+                //                {
+                //                    type   : 'length[6]',
+                //                    prompt : '密码至少6位'
+                //                }
+                //            ]
+                //        }
+                //    },
+                //    submit: function () {
+                //    }
+                //});
                 $('#login').click(function () {
                     //ret = $('.ui.form').form('validate form');
                     //console.log(ret);
@@ -52,7 +52,7 @@
                         dataType: 'json',
                         //type: 'POST',
                         data: {
-                            username: $('#email').val(),
+                            account: $('#account').val(),
                             password: $('#password').val()
                         },
                         success: function (res) {
@@ -75,31 +75,82 @@
                 $('#start_register').click(function () {
                     $('.ui.stardand.modal').modal('show');
                 });
+                $('.field>label').hide();
                 $('#register').click(function () {
+                    $('.field').removeClass('error');
+                    $('.field>label').hide();
                     username = $('#new_username').val();
                     email = $('#new_email').val();
                     password = $('#new_password').val();
                     password_confirm = $('#new_password_confirm').val();
+                    //$('#register_err').empty();
+                    if(password != password_confirm) {
+                        $('#field_password').addClass('error');
+                        $('#field_confirm').addClass('error');
+                        $('#field_confirm>label').show();
+                        return;
+                    }
+
                     $.ajax({
-                        url: 'http://127.0.0.1:8089/v1/user/register',
+                        //async: false,
+                        url: 'http://127.0.0.1:8089/v1/user/query',
                         dataType: 'json',
-                        type: 'POST',
                         data: {
-                            username: username,
-                            password: password,
-                            email: email
-                        },
-                        success: function (res) {
-                            console.log(res);
-                            Cookies.set('auth_token', res.auth_token);
-                            Cookies.set('user_info', res.user_info);
-                            window.location.href = '../user/index.html';
+                            type: 'username',
+                            username: username
                         },
                         error: function () {
-                            console.log('error login')
+                            $('#field_username').addClass('error');
+                            $('#field_username>label').show();
+                            $.ajax({
+                                url: 'http://127.0.0.1:8089/v1/user/query',
+                                dataType: 'json',
+                                data: {
+                                    type: 'email',
+                                    email: email
+                                },
+                                error: function () {
+                                    $('#field_email').addClass('error');
+                                    $('#field_email>label').show();
+                                }
+                            });
+                        },
+                        success: function () {
+                            $.ajax({
+                                url: 'http://127.0.0.1:8089/v1/user/query',
+                                dataType: 'json',
+                                data: {
+                                    type: 'email',
+                                    email: email
+                                },
+                                error: function () {
+                                    $('#field_email').addClass('error');
+                                    $('#field_email>label').show();
+                                },
+                                success: function () {
+                                    $.ajax({
+                                        url: 'http://127.0.0.1:8089/v1/user/register',
+                                        dataType: 'json',
+                                        type: 'POST',
+                                        data: {
+                                            username: username,
+                                            password: password,
+                                            email: email
+                                        },
+                                        success: function (res) {
+                                            console.log(res);
+                                            Cookies.set('auth_token', res.auth_token);
+                                            Cookies.set('user_info', res.user_info);
+                                            window.location.href = '../user/index.html';
+                                        },
+                                        error: function () {
+                                            console.log('error login')
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
-                    console.log('test')
                 });
             });
         </script>
@@ -132,7 +183,7 @@
                     <div class="field">
                         <div class="ui left icon input">
                             <i class="user icon"></i>
-                            <input id="email" type="text" name="email" placeholder="用户名或者E-mail地址">
+                            <input id="account" type="text" name="account" placeholder="用户名或者E-mail地址">
                         </div>
                     </div>
                     <div class="field">
@@ -164,32 +215,35 @@
         <div class="content">
             <form class="ui large form">
                 <div class="ui stacked segment">
-                    <div class="field">
+                    <div id="field_username" class="field">
                         <div class="ui left icon input">
                             <i class="user icon"></i>
                             <input id="new_username" type="text" name="username" placeholder="用户名">
                         </div>
+                        <label>用户名已存在,请输入不同的用户名!</label>
                     </div>
-                    <div class="field">
+                    <div id="field_email" class="field">
                         <div class="ui left icon input">
                             <i class="mail icon"></i>
                             <input id="new_email" type="text" name="email" placeholder="E-mail地址">
                         </div>
+                        <label>邮箱已存在,请输入不同的邮箱!</label>
                     </div>
-                    <div class="field">
+                    <div id="field_password" class="field">
                         <div class="ui left icon input">
                             <i class="lock icon"></i>
                             <input id="new_password" type="password" name="password" placeholder="密码">
                         </div>
                     </div>
-                    <div class="field">
+                    <div id="field_confirm" class="field">
                         <div class="ui left icon input">
                             <i class="undo icon"></i>
                             <input id="new_password_confirm" type="password" name="password" placeholder="确认密码">
                         </div>
+                        <label>两次密码输入不相同,请重新输入!</label>
                     </div>
                 </div>
-                <div class="ui error message"></div>
+                <div id="register_err" class="ui error message"></div>
             </form>
         </div>
         <div class="actions">
