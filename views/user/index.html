@@ -27,7 +27,7 @@
                         user = res.user_info;
                         Cookies.set('user_info', user);
                         date = new Date();
-                        $('#username').text(user.username);
+                        $('#username').text(user.user_name);
                         if(user['last_checkin']){
                             if(user.last_checkin.create_year == date.getFullYear() &&
                                 user.last_checkin.create_month == date.getMonth() + 1 &&
@@ -83,20 +83,20 @@
                 </div>
             </div>
         </div>
-        <div id="menu" class="ui small bottom fixed inverted four item labeled icon menu">
-           <a class="green item">
-                <i class="star icon"></i>
-                收藏
+        <div id="menu" class="ui tiny bottom fixed inverted four labeled icon item menu">
+           <a class="item" href="../checkin/index.html">
+                <i class="checkmark box icon"></i>
+                签到记录
            </a>
-            <a class="red item">
+            <a class="item">
                 <i class="mail icon"></i>
                 消息
            </a>
-           <a class="teal item">
+           <a class="item">
                 <i class="lab icon"></i>
                 实验室
            </a>
-           <a class="green item">
+           <a class="item">
                 <i class="settings icon"></i>
                 设置
            </a>

@@ -19,51 +19,78 @@
                 //    console.log(data)
                 //});
                 auth_token = Cookies.get('auth_token');
+                user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
                 var card_tmpl = '';
-                $.get('../templates/card-checkin.tmpl', function(data) {
-                    card_tmpl = data;
-                    $.ajax({
-                        url: 'http://127.0.0.1:8089/v1/checkin',
-                        dataType: 'jsonp',
-                        //type: 'POST',
-                        data: {
-                            auth_token: auth_token
-                            //uid: '571857ed8c55cf8095999850'
-                        },
-                        success: function(res) {
-                            //console.log(res);
-                            //console.log(card_tmpl);
-                            //var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
-                            var tmpl = _.template(card_tmpl);
-                            var sorted = _.sortBy(res.data, ['timestamp']);
-                            console.log(sorted)
-                            for(var i = sorted.length - 1; i >= 0; i --) {
-                                var c = sorted[i]
-                                if(c.create_hour < 10){
-                                    c.create_hour = '0' + c.create_hour
-                                }
-                                if(c.create_min < 10){
-                                    c.create_min = '0' + c.create_min
-                                }
-                                if(c.create_sec < 10){
-                                    c.create_sec = '0' + c.create_sec
-                                }
-                                var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
-                                var html = tmpl({
-                                    'content': c.content,
-                                    'date': date,
-                                    'imgurl': Cookies.get('imgurl'),
-                                    'imgs': c.images
-                                });
-                                //console.log(html);
-                                $('#container').append($(html));
-                            }
-                        }
-                    });
-                }).fail(function(jqXHR) {
-                    $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
+                var list_type = {
+                    PERSONAL: 0,
+                    ALL: 1,
+                    SPECIAL: 2
+                };
+                var cur_type = list_type.PERSONAL;
+                $('#user').click(function () {
+                    $('#user').addClass('active');
+                    $('#users').removeClass('active');
+                    cur_type = list_type.PERSONAL;
+                    load_func();
                 });
+                $('#users').click(function () {
+                    $('#users').addClass('active');
+                    $('#user').removeClass('active');
+                    cur_type = list_type.ALL;
+                    load_func();
+                });
+                var load_func = function () {
+                    $('#container').empty();
+                    $.get('../templates/card-checkin.tmpl', function(data) {
+                        card_tmpl = data;
+                        $.ajax({
+                            url: 'http://127.0.0.1:8089/v1/checkin',
+                            dataType: 'jsonp',
+                            //type: 'POST',
+                            data: {
+                                auth_token: auth_token,
+                                type: cur_type
+                                //uid: '571857ed8c55cf8095999850'
+                            },
+                            success: function(res) {
+                                //console.log(res);
+                                //console.log(card_tmpl);
+                                //var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
+                                var tmpl = _.template(card_tmpl);
+                                var sorted = _.sortBy(res.data, ['timestamp']);
+                                console.log(sorted)
+                                for(var i = sorted.length - 1; i >= 0; i --) {
+                                    var c = sorted[i]
+                                    if(c.create_hour < 10){
+                                        c.create_hour = '0' + c.create_hour
+                                    }
+                                    if(c.create_min < 10){
+                                        c.create_min = '0' + c.create_min
+                                    }
+                                    if(c.create_sec < 10){
+                                        c.create_sec = '0' + c.create_sec
+                                    }
+                                    var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
+                                    var html = tmpl({
+                                        'cuid': user_info.uid,
+                                        'uid': c.user_id,
+                                        'user_name': c.user_name,
+                                        'content': c.content,
+                                        'date': date,
+                                        'imgurl': Cookies.get('imgurl'),
+                                        'imgs': c.images
+                                    });
+                                    //console.log(html);
+                                    $('#container').append($(html));
+                                }
+                            }
+                        });
+                    }).fail(function(jqXHR) {
+                        $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
+                    });
+                };
+                load_func();
             });
         </script>
     </head>
@@ -72,5 +99,23 @@
         <div id="container" class="ui container">
         </div>
         <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div class="ui tiny bottom fixed inverted menu three labeled icon item">
+            <a class="item" href="../user/index.html">
+                <i class="home icon"></i>
+                首页
+            </a>
+            <a id="user" class="active item">
+                <i class="checkmark box icon"></i>
+                签到记录
+            </a>
+            <a id="users" class="item">
+                <i class="users icon"></i>
+                广场
+            </a>
+        </div>
     </body>
 </html>
