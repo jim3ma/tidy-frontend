@@ -50,12 +50,21 @@
                             window.location.href = '../user/index.html';
                             $('.ui.success.message').show();
                         },
+                        statusCode: {
+                            403: function() {
+                                $('.ui.error.message.1').hide();
+                                $('.ui.error.message.2').show();
+                                setTimeout(function(){
+                                    window.location.href = '../user/index.html';
+                                }, 3000);
+                            }
+                        },
                         error: function (res) {
                             console.log(res);
-                            $('.ui.error.message').show();
+                            $('.ui.error.message.1').show();
                             setTimeout(function(){
-                                $('.ui.error.message').hide();
-                            }, 3000)
+                                $('.ui.error.message.1').hide();
+                            }, 3000);
                             //window.location.href = '../user/index.html';
                         }
                     });
@@ -163,13 +172,19 @@
               </div>
               <div class="ui success message">
                   <div class="content">
-                      <div class="header">签到成功!马上跳转到个人首页!</div>
+                      <div class="header">签到成功!</br>马上跳转到个人首页!</div>
                       <!-- <p>内容描述</p> -->
                   </div>
               </div>
-              <div class="ui error message">
+              <div class="ui error message 1">
                   <div class="content">
                       <div class="header">签到失败!请重试!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+              <div class="ui error message 2">
+                  <div class="content">
+                      <div class="header">每天只能签到一次哦!</br>马上跳转到个人首页!</div>
                       <!-- <p>内容描述</p> -->
                   </div>
               </div>
@@ -186,7 +201,7 @@
               <a class="item" href="../user/index.html">
                   <i class="home icon"></i> 首页
               </a>
-              <a class="active item">
+              <a class="active item" href="../checkin/index.html">
                   <i class="edit icon"></i> 签到
               </a>
               <a class="item" href="../checkin/index.html">
