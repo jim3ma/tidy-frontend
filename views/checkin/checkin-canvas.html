@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+        <title>签到</title>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+        <script type="application/javascript" src="../auth/auth.js"></script>
+        <script type="application/javascript">
+            function dataURLtoBlob(dataurl) {
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new Blob([u8arr], {type:mime});
+            }
+            $(document).ready(function(){
+                $('.ui.message').hide();
+                $('#row2').hide();
+                $('#file').hide();
+                //$('#imgdiv').hide();
+                var imgs = new Array();
+                var imgcnt = -1;
+                //Cookies.set('imgs', '');
+                Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
+                $('#checkin').click(function() {
+                    $('#chkcnt').attr('readonly', 'readonly');
+                    $('#checking').removeClass('inactive').addClass('active');
+                    var content = $('#chkcnt').val();
+                    console.log(content);
+                    //doing upload data
+                    img = '';
+                    console.log(imgs);
+                    if(imgcnt != -1){
+                        img = imgs[0].guid + "." + imgs[0].ext;
+                        for(i = 1; i <= imgcnt; i++){
+                            img += '|' + imgs[i].guid + "." + imgs[i].ext;
+                        }
+                    }
+                    console.log('img: ' + img)
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            content: content,
+                            img: img
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            window.location.href = '../user/index.html';
+                            $('.ui.success.message').show();
+                        },
+                        statusCode: {
+                            403: function() {
+                                $('.ui.error.message.1').hide();
+                                $('.ui.error.message.2').show();
+                                setTimeout(function(){
+                                    window.location.href = '../user/index.html';
+                                }, 3000);
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res);
+                            $('.ui.error.message.1').show();
+                            setTimeout(function(){
+                                $('.ui.error.message.1').hide();
+                            }, 3000);
+                            //window.location.href = '../user/index.html';
+                        }
+                    });
+                    $('#checking').addClass('inactive').removeClass('active');
+                    $('#chkcnt').removeAttr('readonly');
+                });
+                $('#upload').click(function () {
+                    $('#file').click();
+                    //$("form").submit();
+                    //console.log('');
+                });
+                $('#file').change(function (evt) {
+                    //evt.preventDefault();
+                    console.log('file select clicked');
+                    var file = this.files[0];
+                    var img = new Image();
+                    img.onload = function() {
+                        //生成比例
+                        var width = img.width,
+                                height = img.height,
+                                scale = width / height;
+                        width = parseInt(800);
+                        height = parseInt(width / scale);
+
+                        //生成canvas
+                        canvas = document.createElement("canvas");
+                        var ctx = canvas.getContext("2d");
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        var base64 = canvas.toDataURL('image/png',0.8);
+
+                        //var w=window.open('about:blank','image from canvas');
+                        //w.document.write("<img src='"+base64+"' alt='from canvas'/>");
+                        console.log(base64);
+                        var imgblob = dataURLtoBlob(base64);
+                        var fd = new FormData();
+                        fd.append('file', imgblob, 'image.png');
+
+                        if(imgcnt + 2 > 4){
+                            return;
+                        }
+                        var tmpl =  '<div id="<%= divid %>" class="ui column small rounded image upload-img">' +
+                                '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
+                                '<div class="ui upload-img-del">' +
+                                '<i class="large grey remove circle link icon"></i>' +
+                                '</div>' +
+                                '</div>';
+                        var _tmpl = _.template(tmpl);
+                        $.ajax({
+                            url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                            type: 'POST',
+                            data: fd,
+                            //async: false,
+                            cache: false,
+                            contentType: false,
+                            enctype: 'multipart/form-data',
+                            processData: false,
+                            success: function (res) {
+                                imgcnt ++ ;
+                                imgs[imgcnt] = {
+                                    'guid': res.guid,
+                                    'ext': res.ext
+                                };
+                                //Cookies.set('imgs', res);
+                                console.log(res);
+                                console.log(imgs);
+                                divid = 'div' + imgs[imgcnt].guid;
+                                imgid = 'img' + imgs[imgcnt].guid;
+                                imgurl = Cookies.get('imgurl_prefix') + imgs[imgcnt].guid + '.' + imgs[imgcnt].ext;
+                                rowid = '#row1';
+                                if(imgcnt + 1 > 2){
+                                    rowid = '#row2';
+                                }
+                                $(rowid).append(_tmpl({
+                                    'divid': divid,
+                                    'imgid': imgid,
+                                    'imgurl': imgurl
+                                })).show();
+                                $('#' + divid).show();
+                            }
+                        });
+                    };
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        //读取到的文件内容.这个属性只在读取操作完成之后才有效,并且数据的格式取决于读取操作是由哪个方法发起的.所以必须使用reader.onload
+                        var url = reader.result;
+                        //reader读取的文件内容是base64,利用这个url就能实现上传前预览图片
+                        img.src=url;
+                        console.log(url);
+                    };
+                    reader.readAsDataURL(file);
+                    //setInterval( function () { } , 1000 );
+                });
+
+                //
+                //
+
+                $("form").submit(function(evt){
+                    evt.preventDefault();
+                    if(imgcnt + 2 > 4){
+                        return;
+                    }
+                    var formData = new FormData($(this)[0]);
+                    var tmpl =  '<div id="<%= divid %>" class="ui column small rounded image upload-img">' +
+                                  '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
+                                  '<div class="ui upload-img-del">' +
+                                    '<i class="large grey remove circle link icon"></i>' +
+                                  '</div>' +
+                                '</div>';
+                    var _tmpl = _.template(tmpl);
+                    console.log(formData);
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                        type: 'POST',
+                        data: formData,
+                        //async: false,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        success: function (res) {
+                            imgcnt ++ ;
+                            imgs[imgcnt] = {
+                                'guid': res.guid,
+                                'ext': res.ext
+                            };
+                            //Cookies.set('imgs', res);
+                            console.log(res);
+                            console.log(imgs);
+                            divid = 'div' + imgs[imgcnt].guid;
+                            imgid = 'img' + imgs[imgcnt].guid;
+                            imgurl = Cookies.get('imgurl_prefix') + imgs[imgcnt].guid + '.' + imgs[imgcnt].ext;
+                            rowid = '#row1';
+                            if(imgcnt + 1 > 2){
+                                rowid = '#row2';
+                            }
+                            $(rowid).append(_tmpl({
+                                'divid': divid,
+                                'imgid': imgid,
+                                'imgurl': imgurl
+                            })).show();
+                            $('#' + divid).show();
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+      </head>
+      <body>
+          <div id="ciform" class="ui form">
+              <div class="field">
+                  <label><h3>签到内容</h3></label>
+                  <textarea id="chkcnt" placeholder="点此输入签到内容"></textarea>
+              </div>
+              <div id="cigrid" class="ui equal width grid" style="margin: -5px;">
+                  <div id="row1" class="row">
+                  </div>
+                  <div id="row2" class="row">
+                  </div>
+              </div>
+          </div>
+          <!--<div id="label">
+              <a class="ui red tag label">红标签<i class="delete icon"></i></a>
+              <a class="ui green tag label">绿标签<i class="delete icon"></i></a>
+              <a class="ui yellow tag label">黄标签<i class="delete icon"></i></a>
+          </div>
+          <div class="ui right labeled left icon input">
+              <i class="tags icon"></i>
+              <input type="text" placeholder="输入标签">
+              <a class="ui tag label">添加标签</a>
+          </div>
+          <br/>-->
+          <div class="ui center aligned container">
+              <div id="upload" class="ui basic button">
+                  <i class="icon photo"></i>
+                  上图
+              </div>
+              <div id="checkin" class="ui basic button">
+                  <i class="icon edit"></i>
+                  签到
+              </div>
+              <div id="checking" class="ui inactive inverted dimmer">
+                  <div class="ui medium text loader">签到中</div>
+              </div>
+              <div class="ui success message">
+                  <div class="content">
+                      <div class="header">签到成功!</br>马上跳转到个人首页!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+              <div class="ui error message 1">
+                  <div class="content">
+                      <div class="header">签到失败!请重试!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+              <div class="ui error message 2">
+                  <div class="content">
+                      <div class="header">每天只能签到一次哦!</br>马上跳转到个人首页!</div>
+                      <!-- <p>内容描述</p> -->
+                  </div>
+              </div>
+          </div>
+          <form>
+              <input id="file" type="file" accept="image/*" name="file" />
+          </form>
+          <div id="lrz">
+              <img id="lrzimg" src="">
+          </div>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <div class="ui tiny bottom fixed inverted menu three labeled icon item">
+              <a class="item" href="../user/index.html">
+                  <i class="home icon"></i> 首页
+              </a>
+              <a class="active item" href="../checkin/index.html">
+                  <i class="edit icon"></i> 签到
+              </a>
+              <a class="item" href="../checkin/index.html">
+                  <i class="checkmark box icon"></i> 记录
+              </a>
+          </div>
+      </body>
+      <style>
+          .ui.form {
+              margin: 10px;
+          }
+          .ui.input{
+              margin: 10px;
+          }
+          #label{
+              margin-left: 10px;
+          }
+          .upload-img {
+              position:relative
+          }
+          .upload-img-del {
+              position:absolute;
+              right:-1px;
+              bottom:-6px
+          }
+      </style>
+</html>
