@@ -1,0 +1,35 @@
+{
+  "name": "tidy-frontend",
+  "version": "0.0.1",
+  "description": "tidy-frontend",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-uglify": "^1.5.3",
+    "save-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "graceful-fs": "^4.1.4",
+    "gulp": "^3.9.1",
+    "gulp-help": "^1.6.1",
+    "gulp-htmlmin": "^2.0.0",
+    "gulp-uglify": "^1.5.3",
+    "run-sequence": "^1.1.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jim3mar/tidy-frontend.git"
+  },
+  "keywords": [
+    "tidy",
+    "frontend"
+  ],
+  "author": "Jim Mar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jim3mar/tidy-frontend/issues"
+  },
+  "homepage": "https://github.com/jim3mar/tidy-frontend#readme"
+}
