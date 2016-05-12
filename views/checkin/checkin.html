@@ -20,6 +20,7 @@
                 var imgs = new Array();
                 var imgcnt = -1;
                 Cookies.set('img_uploadjs', 'canvas.js');
+                var user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
@@ -117,7 +118,7 @@
                     $('#' + divid).show();
                 };
                 $.ajax({
-                    url: "js/" + Cookies.get('img_uploadjs'),
+                    url: "js/" + user_info.setting.img_uploadjs,
                     dataType: "script",
                     cache: true
                 }).done(function() {
