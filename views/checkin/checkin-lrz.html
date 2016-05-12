@@ -11,15 +11,16 @@
         <script type="application/javascript" src="../static/jwt-decode.min.js"></script>
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
+        <script type="application/javascript" src="../static/lrz/lrz.bundle.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
                 $('.ui.message').hide();
                 $('#row2').hide();
                 $('#file').hide();
-
+                //$('#imgdiv').hide();
                 var imgs = new Array();
                 var imgcnt = -1;
-                Cookies.set('img_uploadjs', 'canvas.js');
+                //Cookies.set('imgs', '');
                 Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
@@ -73,55 +74,93 @@
                 });
                 $('#upload').click(function () {
                     $('#file').click();
+                    //$("form").submit();
+                    //console.log('');
                 });
-                var check = function(){
+                $('#file').change(function (evt) {
+                    //evt.preventDefault();
+                    console.log('file select clicked');
+                    lrz(this.files[0],{
+                        width: 1024,
+                        quality: 1.0,
+                        fieldName: 'file'
+                    })
+                            .then(function (rst) {
+                                // 处理成功会执行
+                                $('#lrzimg').attr('src', rst.base64);
+                                console.log(rst);
+                                console.log('abc');
+                                $.ajax({
+                                    url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                                    type: 'POST',
+                                    data: rst.formData,
+                                    //async: false,
+                                    cache: false,
+                                    contentType: false,
+                                    enctype: 'multipart/form-data',
+                                    processData: false,
+                                    success: function (res) {
+                                        console.log('lrz result:' + res);
+                                    }
+                                });
+                            })
+                            .catch(function (err) {
+                                // 处理失败会执行
+                            })
+                            .always(function () {
+                                // 不管是成功失败，都会执行
+                            });
+                    //$("form").submit();
+                    //setInterval( function () { } , 1000 );
+                });
+                $("form").submit(function(evt){
+                    evt.preventDefault();
                     if(imgcnt + 2 > 4){
-                        return false;
+                        return;
                     }
-                    else {
-                        return true;
-                    }
-                }
-                var tmpl =  '<div id="<%= divid %>" class="ui column small rounded image upload-img">' +
-                        '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
-                        '<div class="ui upload-img-del">' +
-                        '<i class="large grey remove circle link icon"></i>' +
-                        '</div>' +
-                        '</div>';
-                var _tmpl = _.template(tmpl);
-                var callback = function (res) {
-                    imgcnt ++ ;
-                    imgs[imgcnt] = {
-                        'guid': res.guid,
-                        'ext': res.ext,
-                        'url': res.url
-                    };
-                    //Cookies.set('imgs', res);
-                    console.log(res);
-                    console.log(imgs);
-
-                    divid = 'div' + imgs[imgcnt].guid;
-                    imgid = 'img' + imgs[imgcnt].guid;
-                    imgurl = imgs[imgcnt].url;
-
-                    rowid = '#row1';
-                    if(imgcnt + 1 > 2){
-                        rowid = '#row2';
-                    }
-
-                    $(rowid).append(_tmpl({
-                        'divid': divid,
-                        'imgid': imgid,
-                        'imgurl': imgurl
-                    })).show();
-                    $('#' + divid).show();
-                };
-                $.ajax({
-                    url: "js/" + Cookies.get('img_uploadjs'),
-                    dataType: "script",
-                    cache: true
-                }).done(function() {
-                    prepare('#file', check, callback);
+                    var formData = new FormData($(this)[0]);
+                    var tmpl =  '<div id="<%= divid %>" class="ui column small rounded image upload-img">' +
+                                  '<img id="<%= imgid %>" class="rounded" src="<%= imgurl %>">' +
+                                  '<div class="ui upload-img-del">' +
+                                    '<i class="large grey remove circle link icon"></i>' +
+                                  '</div>' +
+                                '</div>';
+                    var _tmpl = _.template(tmpl);
+                    console.log(formData);
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                        type: 'POST',
+                        data: formData,
+                        //async: false,
+                        cache: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        success: function (res) {
+                            imgcnt ++ ;
+                            imgs[imgcnt] = {
+                                'guid': res.guid,
+                                'ext': res.ext
+                            };
+                            //Cookies.set('imgs', res);
+                            console.log(res);
+                            console.log(imgs);
+                            divid = 'div' + imgs[imgcnt].guid;
+                            imgid = 'img' + imgs[imgcnt].guid;
+                            imgurl = Cookies.get('imgurl_prefix') + imgs[imgcnt].guid + '.' + imgs[imgcnt].ext;
+                            rowid = '#row1';
+                            if(imgcnt + 1 > 2){
+                                rowid = '#row2';
+                            }
+                            $(rowid).append(_tmpl({
+                                'divid': divid,
+                                'imgid': imgid,
+                                'imgurl': imgurl
+                            })).show();
+                            $('#' + divid).show();
+                        }
+                    });
+                    return false;
                 });
             });
         </script>
@@ -182,8 +221,11 @@
               </div>
           </div>
           <form>
-              <input id="file" type="file" name="file" />
+              <input id="file" type="file" accept="image/*" name="file" />
           </form>
+          <div id="lrz">
+              <img id="lrzimg" src="">
+          </div>
           <br/>
           <br/>
           <br/>

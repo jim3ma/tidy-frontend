@@ -90,14 +90,13 @@
                     var file = this.files[0];
                     var img = new Image();
                     img.onload = function() {
-                        //生成比例
                         var width = img.width,
                                 height = img.height,
                                 scale = width / height;
                         width = parseInt(800);
                         height = parseInt(width / scale);
 
-                        //生成canvas
+                        //create canvas
                         canvas = document.createElement("canvas");
                         var ctx = canvas.getContext("2d");
                         canvas.width = width;
@@ -105,8 +104,6 @@
                         ctx.drawImage(img, 0, 0, width, height);
                         var base64 = canvas.toDataURL('image/png',0.8);
 
-                        //var w=window.open('about:blank','image from canvas');
-                        //w.document.write("<img src='"+base64+"' alt='from canvas'/>");
                         console.log(base64);
                         var imgblob = dataURLtoBlob(base64);
                         var fd = new FormData();
