@@ -19,6 +19,7 @@ module.exports = function(callback) {
   tasks.push('build-html');
   tasks.push('build-image');
   tasks.push('build-javascript');
+  tasks.push('build-template');
 
   runSequence(tasks, callback);
 };
