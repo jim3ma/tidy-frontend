@@ -7,7 +7,7 @@ ENV NGINX_HTML_DIR /usr/share/nginx/html
 ENV TIDY_URL ctidy.com:8089
 ENV HTTP http
 
-ADD views ${NGINX_HTML_DIR}
+ADD dist ${NGINX_HTML_DIR}
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx.tidy.default.conf /etc/nginx/conf.d/default.conf
 
