@@ -16,7 +16,7 @@ module.exports = function(callback) {
 
   console.info('Building Javascript');
 
-  gulp.src('src/**/*.{png,jpg,jpeg,gif}')
+  gulp.src('src/**/*.js')
     .pipe(gulp.dest('dist/'))
   ;
 }
