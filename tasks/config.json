@@ -1,0 +1,24 @@
+{
+  "root": {
+    "src": "./src",
+    "dest": "./dist"
+  },
+  "tasks": {
+    "html": {
+      "replace": {
+        "fqdn": {
+          "in": "127.0.0.1",
+          "out": "m.ctidy.com"
+        }
+      }
+    },
+    "js": {
+      "replace": {
+        "api_url": {
+          "in": "127.0.0.1:8089",
+          "out": "api.ctidy.com"
+        }
+      }
+    }
+  }
+}

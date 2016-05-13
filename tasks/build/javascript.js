@@ -4,7 +4,10 @@
 
 var
   gulp         = require('gulp'),
-  uglify       = require('gulp-uglify')
+  replace      = require('gulp-replace'),
+  uglify       = require('gulp-uglify'),
+
+  config       = require('../config')
   ;
 
 module.exports = function(callback) {
@@ -18,6 +21,8 @@ module.exports = function(callback) {
 
   gulp.src('src/**/*.js')
     .pipe(uglify())
+    .pipe(replace(config.tasks.js.replace.api_url.in,
+      config.tasks.js.replace.api_url.out))
     .pipe(gulp.dest('dist/'))
   ;
 }
