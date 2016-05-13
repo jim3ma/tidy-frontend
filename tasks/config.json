@@ -15,8 +15,8 @@
     "js": {
       "replace": {
         "api_url": {
-          "in": "127.0.0.1:8089",
-          "out": "api.ctidy.com"
+          "in": "http://127.0.0.1:8089",
+          "out": "https://api.ctidy.com"
         }
       }
     }

@@ -4,8 +4,11 @@
 
 var
   gulp         = require('gulp'),
+  htmlmin      = require('gulp-htmlmin'),
+  replace      = require('gulp-replace'),
   uglify       = require('gulp-uglify'),
-  htmlmin      = require('gulp-htmlmin')
+
+  config       = require('../config')
   ;
 
 module.exports = function(callback) {
@@ -29,6 +32,8 @@ module.exports = function(callback) {
   };
   gulp.src('src/**/*.html')
     .pipe(htmlmin(options))
+    .pipe(replace(config.tasks.js.replace.api_url.in,
+      config.tasks.js.replace.api_url.out))
     .pipe(gulp.dest('dist/'))
   ;
 }
