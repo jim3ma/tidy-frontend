@@ -13,11 +13,6 @@
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                //req = { id: "1" }
-                //$.get('http://localhost:8089/v1/checkin', req, function(data) {
-                //    //$('#dictionary').html(data);
-                //    console.log(data)
-                //});
                 auth_token = Cookies.get('auth_token');
                 user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
@@ -32,65 +27,86 @@
                     $('#user').addClass('active');
                     $('#users').removeClass('active');
                     cur_type = list_type.PERSONAL;
-                    load_func();
+                    reload_func();
                 });
+
                 $('#users').click(function () {
                     $('#users').addClass('active');
                     $('#user').removeClass('active');
                     cur_type = list_type.ALL;
-                    load_func();
+                    reload_func();
                 });
-                var load_func = function () {
+
+                $.get('../templates/card-checkin.tmpl', function(data) {
+                    card_tmpl = data;
+                }).fail(function(jqXHR) {
+                    $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
+                });
+
+                var reload_func = function () {
                     $('#container').empty();
-                    $.get('../templates/card-checkin.tmpl', function(data) {
-                        card_tmpl = data;
-                        $.ajax({
-                            url: 'http://127.0.0.1:8089/v1/checkin',
-                            dataType: 'jsonp',
-                            //type: 'POST',
-                            data: {
-                                auth_token: auth_token,
-                                type: cur_type
-                                //uid: '571857ed8c55cf8095999850'
-                            },
-                            success: function(res) {
-                                //console.log(res);
-                                //console.log(card_tmpl);
-                                //var tmpl = _.template('<div class="ui fluid card"><div class="content"><div class="description"><p><%= content %></p></div><div class="meta"><%= date %></div></div></div>');
-                                var tmpl = _.template(card_tmpl);
-                                var sorted = _.sortBy(res.data, ['timestamp']);
-                                console.log(sorted)
-                                for(var i = sorted.length - 1; i >= 0; i --) {
-                                    var c = sorted[i]
-                                    if(c.create_hour < 10){
-                                        c.create_hour = '0' + c.create_hour
-                                    }
-                                    if(c.create_min < 10){
-                                        c.create_min = '0' + c.create_min
-                                    }
-                                    if(c.create_sec < 10){
-                                        c.create_sec = '0' + c.create_sec
-                                    }
-                                    var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
-                                    var html = tmpl({
-                                        'cuid': user_info.uid,
-                                        'uid': c.user_id,
-                                        'user_name': c.user_name,
-                                        'content': c.content,
-                                        'date': date,
-                                        'imgurl': Cookies.get('imgurl'),
-                                        'imgs': c.images
-                                    });
-                                    //console.log(html);
-                                    $('#container').append($(html));
+                    //load_func();
+                    check_and_load();
+                };
+                var check_and_load = function () {
+                    if(card_tmpl != "") {
+                        load_func();
+                    } else {
+                        console.log('card_tmpl is empty, waiting ...');
+                        setTimeout(check_and_load, 8);
+                    }
+                };
+                var load_func = function () {
+                    console.info('TBD...paging...');
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'jsonp',
+                        //type: 'POST',
+                        data: {
+                            auth_token: auth_token,
+                            type: cur_type
+                        },
+                        success: function(res) {
+                            var tmpl = _.template(card_tmpl);
+                            var sorted = _.sortBy(res.data, ['timestamp']);
+                            console.log(sorted);
+                            for(var i = sorted.length - 1; i >= 0; i --) {
+                                var c = sorted[i]
+                                if(c.create_hour < 10){
+                                    c.create_hour = '0' + c.create_hour
                                 }
+                                if(c.create_min < 10){
+                                    c.create_min = '0' + c.create_min
+                                }
+                                if(c.create_sec < 10){
+                                    c.create_sec = '0' + c.create_sec
+                                }
+                                var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
+                                var html = tmpl({
+                                    'cuid': user_info.uid,
+                                    'uid': c.user_id,
+                                    'user_name': c.user_name,
+                                    'content': c.content,
+                                    'date': date,
+                                    'imgurl': Cookies.get('imgurl'),
+                                    'imgs': c.images
+                                });
+                                //console.log(html);
+                                $('#container').append($(html));
                             }
-                        });
-                    }).fail(function(jqXHR) {
-                        $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
+                        }
                     });
                 };
-                load_func();
+                //reload_func();
+                $('#container')
+                    .visibility({
+                        once: false,
+                        observeChanges: true,
+                        onBottomVisible: function() {
+                            load_func();
+                        }
+                    })
+                ;
             });
         </script>
     </head>
