@@ -43,7 +43,7 @@
                             $('#checkin').show();
                         }
                     }
-                })
+                });
                 $('#checkin').click(function() {
                     //user_info = Cookies.getJSON('user_info');
                     //$('#checkin_days').text(user_info.continuous);
@@ -51,6 +51,24 @@
                 });
                 $('#checkin_status').click(function() {
                     window.location.href = '../checkin/index.html';
+                });
+                $('#setting').click(function(){
+                    $('.ui.modal')
+                            .modal('show')
+                    ;
+                });
+                $('.more').hide();
+                $('#more').click(function(){
+                    $('#more').hide();
+                    if($('#cb').is(':checked')){
+                        $('.more').show();
+                    } else {
+                        $('.more').hide();
+                    }
+                    $('.ui.modal')
+                            .modal('hide')
+                            .modal('show')
+                    ;
                 });
             });
         </script>
@@ -83,25 +101,127 @@
                 </div>
             </div>
         </div>
+        <!--
         <div id="menu" class="ui tiny bottom fixed inverted four labeled icon item menu">
-           <a class="item" href="../checkin/index.html">
-                <i class="checkmark box icon"></i>
-                签到记录
-           </a>
+        -->
+        <div id="menu" class="ui tiny bottom fixed inverted three labeled icon item menu">
             <a class="item">
                 <i class="mail icon"></i>
                 消息
-           </a>
-           <a class="item">
+            </a>
+            <a class="item" href="../checkin/index.html">
+                <i class="checkmark box icon"></i>
+                签到记录
+            </a>
+            <!--
+            <a class="item">
                 <i class="lab icon"></i>
                 实验室
-           </a>
-           <a class="item">
+            </a>
+            -->
+            <a id="setting" class="item">
                 <i class="settings icon"></i>
                 设置
-           </a>
+            </a>
         </div>
         <br/>
+        <div class="ui stardand modal hidden">
+            <i class="close icon"></i>
+            <div class="header">
+                个人设置
+            </div>
+            <div class="content">
+                <form class="ui form">
+                    <div id="field_username" class="field">
+                        <div class="ui left labeled input">
+                            <div class="ui basic label">
+                                <!-- <i class="user icon"></i>-->
+                                用户名
+                            </div>
+                            <input id="new_username" type="text" name="username" placeholder="新用户名">
+                        </div>
+                    </div>
+                    <div id="field_old_password" class="field">
+                        <div class="ui left labeled input">
+                            <div class="ui basic label">
+                                <!-- <i class="lock icon"></i>-->
+                                旧密码
+                            </div>
+                            <input id="old_password" type="password" name="password" placeholder="旧密码">
+                        </div>
+                    </div>
+                    <div id="field_new_password" class="field">
+                        <div class="ui left labeled input">
+                            <div class="ui basic label">
+                                <!-- <i class="lock icon"></i>-->
+                                新密码
+                            </div>
+                            <input id="new_password" type="password" name="password" placeholder="新密码">
+                        </div>
+                    </div>
+                    <div id="field_new_confirm" class="field">
+                        <div class="ui left labeled input">
+                            <div class="ui basic label">
+                                <!-- <i class="undo icon"></i>-->
+                                确&nbsp;&nbsp;&nbsp;认
+                            </div>
+                            <input id="new_password_confirm" type="password" name="password" placeholder="确认新密码">
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div id="more" class="ui toggle checkbox">
+                            <input id="cb" type="checkbox" tabindex="0" class="">
+                            <label>更多</label>
+                        </div>
+                    </div>
+                    <div class="field more">
+                        <select class="ui left labeled dropdown">
+                            <option value="">性别</option>
+                            <option value="1">男</option>
+                            <option value="0">女</option>
+                        </select>
+                    </div>
+                    <div class="ui segment more">
+                        <label for="fruit">图片上传方式:</label>
+                        <br/>
+                        <div class="inline fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="fruit" checked="" tabindex="0" class="">
+                                    <label>Apples</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="fruit" tabindex="0" class="">
+                                    <label>Oranges</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="fruit" tabindex="0" class="">
+                                    <label>Pears</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui toggle checkbox more">
+                        <input id="receive" type="checkbox" tabindex="0" class="">
+                        <label>接收系统邮件</label>
+                    </div>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui negative black button right labeled icon button">
+                    取消
+                    <i class="close icon"></i>
+                </div>
+                <div id="update" class="ui green right labeled icon button">
+                    更新
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
     </body>
     <style>
         .tidy-avatar {
