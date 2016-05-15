@@ -13,8 +13,8 @@
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
-                auth_token = Cookies.get('auth_token');
-                user_info = Cookies.getJSON('user_info');
+                var auth_token = Cookies.get('auth_token');
+                var user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
                 var card_tmpl = '';
                 var list_type = {
@@ -45,7 +45,7 @@
 
                 var reload_func = function () {
                     $('#container').empty();
-                    //load_func();
+                    last_timestamp = parseInt(Date.parse(new Date())/1000);
                     check_and_load();
                 };
                 var check_and_load = function () {
@@ -56,6 +56,8 @@
                         setTimeout(check_and_load, 8);
                     }
                 };
+                var last_timestamp = parseInt(Date.parse(new Date())/1000);
+                var cnt = 32;
                 var load_func = function () {
                     console.info('TBD...paging...');
                     $.ajax({
@@ -64,12 +66,20 @@
                         //type: 'POST',
                         data: {
                             auth_token: auth_token,
-                            type: cur_type
+                            type: cur_type,
+                            timestamp: last_timestamp,
+                            count: cnt
                         },
                         success: function(res) {
                             var tmpl = _.template(card_tmpl);
                             var sorted = _.sortBy(res.data, ['timestamp']);
+                            if(sorted.length == 0){
+                                console.log('no data!');
+                                return;
+                            }
                             console.log(sorted);
+                            last_timestamp = sorted[0].timestamp;
+                            //console.log(last_timestamp);
                             for(var i = sorted.length - 1; i >= 0; i --) {
                                 var c = sorted[i]
                                 if(c.create_hour < 10){
@@ -103,7 +113,7 @@
                         once: false,
                         observeChanges: true,
                         onBottomVisible: function() {
-                            load_func();
+                            check_and_load();
                         }
                     })
                 ;
