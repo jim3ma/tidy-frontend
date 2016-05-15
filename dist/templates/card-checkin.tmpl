@@ -1,0 +1,30 @@
+<div class="ui fluid card">
+<% if(imgs != "") { %>
+  <% if(imgs.length == 1) { %>
+  <div class="ui image">
+    <img src="<%= imgurl %><%= imgs[0] %>">
+  </div>
+  <% } else { %>
+  <div class="ui equal width grid" style="margin: 0px;">
+    <% for( i =0; i < imgs.length/2; i++ ) { %>
+    <div class="row">
+      <% for( j = i*2; j < imgs.length && j < i*2 + 2; j++ ){ %>
+      <div class="ui column small rounded image upload-img">
+        <img class="rounded" src="<%= imgurl %><%= imgs[j] %>">
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+<% } %>
+  <div class="content">
+    <div class="header"><%= user_name %></div>
+    <div class="description">
+      <p><%= content %></p>
+    </div>
+    <div class="meta">
+      <%= date %>
+    </div>
+  </div>
+</div>

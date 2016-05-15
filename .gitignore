@@ -1,6 +1,5 @@
 *node_modules*
 static/semantic/*
 static/semantic*
-dist/*
 *.swp
 .idea/*
