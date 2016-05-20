@@ -2,7 +2,7 @@
  * Created by jim on 5/11/16.
  */
 
-function prepare(element, check, callback) {
+function prepare(element, check, done, fail) {
     $(element).change(function (evt) {
         //evt.preventDefault();
         console.log('file select clicked');
@@ -23,11 +23,14 @@ function prepare(element, check, callback) {
             processData: false,
             success: function(res){
                 url = Cookies.get('imgurl_prefix') + res.guid + '.' + res.ext;
-                callback({
+                done({
                     'guid': res.guid,
                     'ext': res.ext,
                     'url': url
                 });
+            },
+            error: function(res) {
+                fail();
             }
         });
         //$("form").submit();

@@ -2,7 +2,7 @@
  * Created by jim on 5/11/16.
  */
 
-function prepare(element, check, callback) {
+function prepare(element, check, done, fail) {
     $.ajax({
         url: "../static/lrz/lrz.bundle.js",
         dataType: "script",
@@ -14,8 +14,8 @@ function prepare(element, check, callback) {
                 return;
             }
             lrz(this.files[0],{
-                width: 1024,
-                quality: 1.0,
+                width: 800,
+                quality: 0.8,
                 fieldName: 'file'
             })
                 .then(function (rst) {
@@ -32,11 +32,14 @@ function prepare(element, check, callback) {
                         processData: false,
                         success: function (res) {
                             //console.log('lrz result:' + res);
-                            callback({
+                            done({
                                 'guid': res.guid,
                                 'ext': res.ext,
                                 'url': rst.base64
                             });
+                        },
+                        error: function(res) {
+                            fail();
                         }
                     });
                 })

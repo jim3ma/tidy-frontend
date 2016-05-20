@@ -11,7 +11,7 @@ function dataURLtoBlob(dataurl) {
     return new Blob([u8arr], {type:mime});
 }
 
-function prepare(element, check, callback) {
+function prepare(element, check, done, fail) {
     $(element).change(function (evt) {
         //evt.preventDefault();
 
@@ -47,12 +47,16 @@ function prepare(element, check, callback) {
                 contentType: false,
                 enctype: 'multipart/form-data',
                 processData: false,
+                timeout: 60000,
                 success: function(res) {
-                    callback({
+                    done({
                         'guid': res.guid,
                         'ext': res.ext,
                         'url': base64
                     });
+                },
+                error: function(res) {
+                    fail();
                 }
             });
         };

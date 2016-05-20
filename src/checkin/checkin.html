@@ -14,8 +14,10 @@
         <script type="application/javascript">
             $(document).ready(function(){
                 $('.ui.message').hide();
+                $('#cigrid').hide();
                 $('#row2').hide();
                 $('#file').hide();
+                $('#uploading').hide();
 
                 var imgs = new Array();
                 var imgcnt = -1;
@@ -36,7 +38,7 @@
                             img += '|' + imgs[i].guid + "." + imgs[i].ext;
                         }
                     }
-                    console.log('img: ' + img)
+                    console.log('img: ' + img);
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'json',
@@ -80,6 +82,7 @@
                         return false;
                     }
                     else {
+                        $('#uploading').show();
                         return true;
                     }
                 }
@@ -91,6 +94,8 @@
                         '</div>';
                 var _tmpl = _.template(tmpl);
                 var callback = function (res) {
+                    $('#uploading').hide();
+                    $('#cigrid').show();
                     imgcnt ++ ;
                     imgs[imgcnt] = {
                         'guid': res.guid,
@@ -122,7 +127,10 @@
                     dataType: "script",
                     cache: true
                 }).done(function() {
-                    prepare('#file', check, callback);
+                    prepare('#file', check, callback, function(){
+                        console.log('upload failed');
+                        $('#uploading').hide();
+                    });
                 });
             });
         </script>
@@ -152,6 +160,13 @@
           </div>
           <br/>-->
           <div class="ui center aligned container">
+              <div id="uploading" class="ui basic segment">
+                  <br/>
+                  <div class="ui active inverted dimmer">
+                      <div class="ui medium text loader">图片上传中</div>
+                  </div>
+              </div>
+              <br/>
               <div id="upload" class="ui basic button">
                   <i class="icon photo"></i>
                   上图
@@ -160,7 +175,7 @@
                   <i class="icon edit"></i>
                   签到
               </div>
-              <div id="checking" class="ui inactive inverted dimmer">
+              <div id="checking" class="ui inactive dimmer">
                   <div class="ui medium text loader">签到中</div>
               </div>
               <div class="ui success message">

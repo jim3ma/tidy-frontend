@@ -33,6 +33,7 @@
                         console.log(res);
                         Cookies.set('auth_token', res.auth_token);
                         Cookies.set('user_info', res.user_info);
+                        Cookies.set('login_info', res.login_info);
                         window.location.href = '../user/index.html';
                     },
                     statusCode: {
