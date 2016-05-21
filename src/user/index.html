@@ -9,6 +9,7 @@
         <script type="application/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
         <script type="application/javascript" src="//cdn.bootcss.com/lodash.js/4.9.0/lodash.min.js"></script>
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+        <script src="http://jsconsole.com/js/remote.js?1fca8f00-583f-46e6-bcaf-1c9fe13fb066"></script>
         <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
@@ -64,13 +65,13 @@
                             .modal('show')
                     ;
                 });
-                $('.more').hide();
+                $('[name=more]').hide();
                 $('#more').click(function(){
                     $('#more').hide();
                     if($('#cb').is(':checked')){
-                        $('.more').show();
+                        $('[name=more]').show();
                     } else {
-                        $('.more').hide();
+                        $('[name=more]').hide();
                     }
                     $('#setting_dialog')
                             .modal('hide')
@@ -118,6 +119,8 @@
         </script>
     </head>
     <body>
+        <br/>
+        <br/>
         <br/>
         <div id="container" class="ui center aligned container">
         </div>
@@ -218,14 +221,14 @@
                             <label>更多</label>
                         </div>
                     </div>
-                    <div class="field more">
+                    <div name="more" class="field">
                         <select id="gender" class="ui left labeled dropdown">
                             <option value="">性别</option>
                             <option value="1">男</option>
                             <option value="0">女</option>
                         </select>
                     </div>
-                    <div class="ui segment more">
+                    <div name="more" class="ui segment">
                         <label>图片上传方式:</label>
                         <br/>
                         <div class="inline fields">
@@ -249,12 +252,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ui toggle checkbox more">
+                    <div name="more" class="ui toggle checkbox">
                         <input id="recv_sysmsg" type="checkbox" tabindex="0">
                         <label>接收系统邮件</label>
                         <br/>
                     </div>
-                    <div class="ui more">
+                    <div name="more" class="ui">
                         <div id="logoff" class="ui fluid gray button">退出</div>
                     </div>
                     <div id="msg_update_ok" class="ui positive message hidden">
