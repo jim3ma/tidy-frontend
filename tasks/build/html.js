@@ -31,7 +31,7 @@ module.exports = function(callback) {
         minifyCSS: true//压缩页面CSS
   };
   gulp.src('src/**/*.html')
-    .pipe(htmlmin(options))
+    //.pipe(htmlmin(options))
     .pipe(replace(config.tasks.js.replace.api_url.in,
       config.tasks.js.replace.api_url.out))
     .pipe(gulp.dest('dist/'))
