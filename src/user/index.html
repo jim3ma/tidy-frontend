@@ -53,7 +53,7 @@
                     window.location.href = '../checkin/index.html';
                 });
                 $('#setting').click(function(){
-                    $('.ui.modal')
+                    $('#setting_dialog')
                             .modal('show')
                     ;
                 });
@@ -65,7 +65,7 @@
                     } else {
                         $('.more').hide();
                     }
-                    $('.ui.modal')
+                    $('#setting_dialog')
                             .modal('hide')
                             .modal('show')
                     ;
@@ -89,7 +89,17 @@
                             recv_sysmsg: $("#recv_sysmsg").is(":checked")
                         },
                         success: function(res) {
-                            console.log(res);
+                            $('#msg_update_ok').show();
+                            setTimeout(function(){
+                                $('#msg_update_ok').hide();
+                                $('#setting_dialog').hide();
+                            }, 3000);
+                        },
+                        error: function(res) {
+                            $('#msg_update_error').show();
+                            setTimeout(function(){
+                                $('#msg_update_error').hide();
+                            }, 3000);
                         }
                     });
                 });
@@ -152,7 +162,7 @@
             </a>
         </div>
         <br/>
-        <div class="ui stardand modal hidden">
+        <div id="setting_dialog" class="ui stardand modal hidden">
             <i class="close icon"></i>
             <div class="header">
                 个人设置
@@ -239,6 +249,24 @@
                     </div>
                     <div class="ui more">
                         <div id="logoff" class="ui fluid gray button">退出</div>
+                    </div>
+                    <div id="msg_update_ok" class="ui positive message hidden">
+                        <!--
+                        <i class="close icon"></i>
+                        -->
+                        <div class="header">更新成功!</div>
+                        <!--
+                        <p>现在跳转到您的<b>主页</b></p>
+                        -->
+                    </div>
+                    <div id="msg_update_error" class="ui negative message hidden">
+                        <!--
+                        <i class="close icon"></i>
+                        -->
+                        <div class="header">更新失败!</div>
+                        <!--
+                        <p>现在跳转到您的<b>主页</b>查看</p>
+                        -->
                     </div>
                 </form>
             </div>
