@@ -32,6 +32,7 @@ function check_auth() {
     //    + user_info.last_checkin.day);
 }
 
+/*
 function do_auth(username, password) {
     $.ajax({
         url: 'http://127.0.0.1:8089/v1/user/login',
@@ -48,6 +49,7 @@ function do_auth(username, password) {
     Cookies.set('auth_token', { id: '1', last_checkin: { year : 2016, month: 3, day:3 } });
     Cookies.set('user_info', {})
 }
+*/
 
 function clear_auth() {
     Cookies.remove('auth_token');

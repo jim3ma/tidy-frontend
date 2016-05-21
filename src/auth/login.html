@@ -11,7 +11,34 @@
         <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
         <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
         <script type="application/javascript">
+            function check_auth() {
+                auth_token = Cookies.get('auth_token');
+                console.log(auth_token);
+                try {
+                    if(auth_token == undefined){
+                        return;
+                    }
+                    exp = jwt_decode(auth_token)['exp'];
+                    console.log('expire time:' + exp);
+                    d = new Date();
+                    console.log('current time:' + d.getTime()/1000);
+                    if(d.getTime()/1000 >= exp) {
+                        console.log('auth_token expired!');
+                        //window.location.href = '../auth/login.html';
+                    } else {
+                        console.log('auth_token doesn\'t expired!');
+                        window.location.href = '../user/index.html';
+                    }
+                }
+                catch (err) {
+                    return;
+                }
+                //user_info = Cookies.getJSON('user_info');
+                //console.log(user_info);
+            }
+            check_auth();
             $(document).ready(function(){
+                console.log(Cookies.get("1") == undefined);
                 //$('.ui.form').form({
                 //    fields: {
                 //        email: {

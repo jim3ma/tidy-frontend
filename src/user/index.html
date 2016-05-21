@@ -72,6 +72,30 @@
                 });
                 $('#update').click(function(){
 
+                    // TBD
+                    // check parameter
+
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/user/update_setting',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            new_username: $('#new_username').val(),
+                            old_password: $('#old_password').val(),
+                            new_password: $('#new_password').val(),
+                            upload_method: $('input:radio[name="upload_method"]:checked').val() + '.js',
+                            gender: $('#gender').val(),
+                            recv_sysmsg: $("#recv_sysmsg").is(":checked")
+                        },
+                        success: function(res) {
+                            console.log(res);
+                        }
+                    });
+                });
+                $('#logoff').click(function(){
+                    clear_auth();
+                    window.location.href = '../auth/login.html';
                 });
             });
         </script>
@@ -178,39 +202,43 @@
                         </div>
                     </div>
                     <div class="field more">
-                        <select class="ui left labeled dropdown">
+                        <select id="gender" class="ui left labeled dropdown">
                             <option value="">性别</option>
                             <option value="1">男</option>
                             <option value="0">女</option>
                         </select>
                     </div>
                     <div class="ui segment more">
-                        <label for="fruit">图片上传方式:</label>
+                        <label>图片上传方式:</label>
                         <br/>
                         <div class="inline fields">
                             <div class="field">
                                 <div class="ui radio checkbox">
-                                    <input type="radio" name="fruit" checked="" tabindex="0" class="">
+                                    <input type="radio" name="upload_method" checked="" tabindex="0" value="canvas">
                                     <label>Canvas</label>
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui radio checkbox">
-                                    <input type="radio" name="fruit" tabindex="0" class="">
+                                    <input type="radio" name="upload_method" tabindex="0" value="default">
                                     <label>原生</label>
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui radio checkbox">
-                                    <input type="radio" name="fruit" tabindex="0" class="">
+                                    <input type="radio" name="upload_method" tabindex="0" value="lrz">
                                     <label>LRZ</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="ui toggle checkbox more">
-                        <input id="receive" type="checkbox" tabindex="0" class="">
+                        <input id="recv_sysmsg" type="checkbox" tabindex="0">
                         <label>接收系统邮件</label>
+                        <br/>
+                    </div>
+                    <div class="ui more">
+                        <div id="logoff" class="ui fluid gray button">退出</div>
                     </div>
                 </form>
             </div>
