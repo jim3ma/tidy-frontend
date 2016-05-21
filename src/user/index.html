@@ -15,6 +15,7 @@
             $(document).ready(function(){
                 $('#checkin_status').hide();
                 $('#checkin').show();
+                var user_info;
                 $.ajax({
                     url: 'http://127.0.0.1:8089/v1/user/info',
                     dataType: 'json',
@@ -24,18 +25,18 @@
                     },
                     success: function(res) {
                         console.log(res);
-                        user = res.user_info;
-                        Cookies.set('user_info', user);
+                        user_info = res.user_info;
+                        Cookies.set('user_info', user_info);
                         date = new Date();
-                        $('#username').text(user.user_name);
-                        if(user['last_checkin']){
-                            if(user.last_checkin.create_year == date.getFullYear() &&
-                                user.last_checkin.create_month == date.getMonth() + 1 &&
-                                user.last_checkin.create_day == date.getDate()){
+                        $('#username').text(user_info.user_name);
+                        if(user_info['last_checkin']){
+                            if(user_info.last_checkin.create_year == date.getFullYear() &&
+                                    user_info.last_checkin.create_month == date.getMonth() + 1 &&
+                                    user_info.last_checkin.create_day == date.getDate()){
                                 // already checkin today
                                 $('#checkin').hide();
                                 $('#checkin_status').show();
-                                $('#checkin_days').text(user.continuous);
+                                $('#checkin_days').text(user_info.continuous);
                             }
                         } else {
                             // not yet checkin tody
@@ -53,6 +54,12 @@
                     window.location.href = '../checkin/index.html';
                 });
                 $('#setting').click(function(){
+                    var upload_method = user_info.setting.img_uploadjs.slice(0, -3);
+                    console.log("upload_method: " + upload_method);
+                    //upload_method = "default";
+                    $('#new_username').val(user_info.user_name);
+                    $('#gender').val(user_info.setting.gender);
+                    $("input[name=upload_method][value=" + upload_method + "]").attr("checked",true);
                     $('#setting_dialog')
                             .modal('show')
                     ;
@@ -84,7 +91,7 @@
                             new_username: $('#new_username').val(),
                             old_password: $('#old_password').val(),
                             new_password: $('#new_password').val(),
-                            upload_method: $('input:radio[name="upload_method"]:checked').val() + '.js',
+                            upload_method: $('input:radio[name="upload_method"]:checked').val() + ".js",
                             gender: $('#gender').val(),
                             recv_sysmsg: $("#recv_sysmsg").is(":checked")
                         },
@@ -92,8 +99,8 @@
                             $('#msg_update_ok').show();
                             setTimeout(function(){
                                 $('#msg_update_ok').hide();
-                                $('#setting_dialog').hide();
-                            }, 3000);
+                                $('#setting_dialog').modal('hide');
+                            }, 1000);
                         },
                         error: function(res) {
                             $('#msg_update_error').show();

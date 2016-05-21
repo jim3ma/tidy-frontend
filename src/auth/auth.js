@@ -56,5 +56,13 @@ function clear_auth() {
     Cookies.remove('user_info');
 }
 
+function update_user_info(user_info) {
+    Cookies.set('user_info', {
+        username: user_info.user_name,
+        email: user_info.email,
+        portrait: user_info.portrait
+    });
+}
+
 check_auth();
 
