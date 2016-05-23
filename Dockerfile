@@ -7,9 +7,9 @@ ENV NGINX_HTML_DIR /usr/share/nginx/html
 ENV TIDY_URL ctidy.com:8089
 ENV HTTP http
 
-ADD dist ${NGINX_HTML_DIR}
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx.tidy.default.conf /etc/nginx/conf.d/default.conf
+ADD dist ${NGINX_HTML_DIR}
 
 RUN find ${NGINX_HTML_DIR} -name "*.html" -exec \
         sed -i "s/http:\/\/127.0.0.1:8089/${HTTP}:\/\/${TIDY_URL}/g" {} \; && \

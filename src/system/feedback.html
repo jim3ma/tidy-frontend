@@ -1,0 +1,29 @@
+<div id="feedback_dialog" class="ui stardand modal hidden">
+    <i class="close icon"></i>
+    <div class="header">
+        问题反馈
+    </div>
+    <div class="content">
+        <form class="ui form">
+            <div class="field">
+                <textarea id="fd_content" style="height: 256px;" placeholder="点此输入反馈内容"></textarea>
+            </div>
+            <div id="fd_msg_ok" class="ui positive message hidden">
+                <div class="header">提交成功!</div>
+            </div>
+            <div id="fd_msg_error" class="ui negative message hidden">
+                <div class="header">提交失败!</div>
+            </div>
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui negative black button right labeled icon button">
+            取消
+            <i class="close icon"></i>
+        </div>
+        <div id="upload_feedback" class="ui green right labeled icon button">
+            提交
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
