@@ -24,6 +24,7 @@ function check_auth() {
         window.location.href = '../auth/login.html';
     }
     user_info = Cookies.getJSON('user_info');
+    console.log('user info:');
     console.log(user_info);
     //console.log('user id:' + user_info.uid + ', '
     //    + 'last checkin: '
@@ -54,14 +55,6 @@ function do_auth(username, password) {
 function clear_auth() {
     Cookies.remove('auth_token');
     Cookies.remove('user_info');
-}
-
-function update_user_info(user_info) {
-    Cookies.set('user_info', {
-        username: user_info.user_name,
-        email: user_info.email,
-        portrait: user_info.portrait
-    });
 }
 
 check_auth();
