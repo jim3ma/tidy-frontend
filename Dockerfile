@@ -1,4 +1,4 @@
-FROM nginx:1.9-alpine
+FROM nginx:1.10-alpine
 
 MAINTAINER Jim Mar <majinjing3@gmail.com>
 ENV CREATE_DATE 2016-04-23
