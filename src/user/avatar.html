@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <title>avatar</title>
+        <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
+        <script type="application/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js" ></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/lodash.js/4.9.0/lodash.min.js"></script>
+        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+        <!--
+        <script src="http://jsconsole.com/js/remote.js?1fca8f00-583f-46e6-bcaf-1c9fe13fb066"></script>
+        -->
+        <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
+        <!--
+        <script type="application/javascript" src="../auth/auth.js"></script>
+        <script type="application/javascript" src="../system/feedback.js"></script>
+        -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.1/cropper.min.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.1/cropper.min.js"></script>
+        <script type="application/javascript">
+            $(document).ready(function(){
+                $('#image').cropper({
+                    aspectRatio: 16 / 9,
+                    cropBoxResizable: false,
+                    cropBoxMovable: false,
+                    dragMode: 'move',
+                    aspectRatio: 1,
+                    toggleDragModeOnDblclick: false,
+                    /*
+                    crop: function(e) {
+                        // Output the result data for cropping image.
+                        console.log(e.x);
+                        console.log(e.y);
+                        console.log(e.width);
+                        console.log(e.height);
+                        console.log(e.rotate);
+                        console.log(e.scaleX);
+                        console.log(e.scaleY);
+                    },
+                    */
+                    built: function () {
+                        var containerData = $('#image').cropper('getContainerData');
+                        var width = 256;
+                        var heigth = 256;
+                        var boxData = {
+                            left: (containerData.width - width)/2,
+                            top: (containerData.height - width)/2,
+                            width: width,
+                            height: heigth
+                        }
+                        console.log(boxData);
+                        console.log(containerData);
+                        $('#image').cropper('setCropBoxData', boxData);
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <img id="image" src="../logo/logo-origin.png">
+        </div>
+    </body>
+    <style>
+        img {
+            width: 384px; /* This rule is very important, please do not ignore this! */
+        }
+    </style>
+</html>
