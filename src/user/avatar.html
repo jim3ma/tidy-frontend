@@ -1,71 +1,160 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <title>avatar</title>
-        <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
-        <script type="application/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js" ></script>
-        <script type="application/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
-        <script type="application/javascript" src="//cdn.bootcss.com/lodash.js/4.9.0/lodash.min.js"></script>
-        <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
-        <!--
-        <script src="http://jsconsole.com/js/remote.js?1fca8f00-583f-46e6-bcaf-1c9fe13fb066"></script>
-        -->
-        <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
-        <!--
-        <script type="application/javascript" src="../auth/auth.js"></script>
-        <script type="application/javascript" src="../system/feedback.js"></script>
-        -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.1/cropper.min.css">
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.1/cropper.min.js"></script>
-        <script type="application/javascript">
-            $(document).ready(function(){
-                $('#image').cropper({
-                    aspectRatio: 16 / 9,
-                    cropBoxResizable: false,
-                    cropBoxMovable: false,
-                    dragMode: 'move',
-                    aspectRatio: 1,
-                    toggleDragModeOnDblclick: false,
-                    /*
-                    crop: function(e) {
-                        // Output the result data for cropping image.
-                        console.log(e.x);
-                        console.log(e.y);
-                        console.log(e.width);
-                        console.log(e.height);
-                        console.log(e.rotate);
-                        console.log(e.scaleX);
-                        console.log(e.scaleY);
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>avatar</title>
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
+    <script type="application/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js" ></script>
+    <script type="application/javascript" src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
+    <script type="application/javascript" src="//cdn.bootcss.com/lodash.js/4.9.0/lodash.min.js"></script>
+    <script type="application/javascript" src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.js"></script>
+    <!--
+    <script src="http://jsconsole.com/js/remote.js?1fca8f00-583f-46e6-bcaf-1c9fe13fb066"></script>
+    -->
+    <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
+    <!--
+    <script type="application/javascript" src="../auth/auth.js"></script>
+    <script type="application/javascript" src="../system/feedback.js"></script>
+    -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/cropper/2.3.1/cropper.min.css">
+    <script type="application/javascript" src="//cdn.bootcss.com/cropper/2.3.1/cropper.min.js"></script>
+    <script type="application/javascript">
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+        }
+        $(document).ready(function(){
+            $('#avatar').cropper({
+                aspectRatio: 16 / 9,
+                cropBoxResizable: false,
+                cropBoxMovable: false,
+                dragMode: 'move',
+                aspectRatio: 1,
+                toggleDragModeOnDblclick: false,
+                /*
+                 crop: function(e) {
+                 // Output the result data for cropping image.
+                 console.log(e.x);
+                 console.log(e.y);
+                 console.log(e.width);
+                 console.log(e.height);
+                 console.log(e.rotate);
+                 console.log(e.scaleX);
+                 console.log(e.scaleY);
+                 },
+                 */
+                built: function () {
+                    var containerData = $('#avatar').cropper('getContainerData');
+                    var width = 256;
+                    var heigth = 256;
+                    var boxData = {
+                        left: (containerData.width - width)/2,
+                        top: (containerData.height - width)/2,
+                        width: width,
+                        height: heigth
+                    };
+                    console.log(boxData);
+                    console.log(containerData);
+                    $('#avatar').cropper('setCropBoxData', boxData);
+                }
+            });
+            $('#editting_dialog')
+                    .modal('show')
+            ;
+            $('#update_avatar').click(function () {
+                var dataURL = $('#avatar').cropper('getCroppedCanvas').toDataURL('image/png', 1.0);
+                console.log(dataURL);
+
+                var imgblob = dataURLtoBlob(dataURL);
+                var fd = new FormData();
+                fd.append('file', imgblob, 'avatar-scaled.png');
+                //fd.append('auth_token', Cookies.get('auth_token'));
+
+                $.ajax({
+                    url: 'http://127.0.0.1:8089/v1/user/uploadimg',
+                    type: 'POST',
+                    data: fd,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    timeout: 60000,
+                    success: function(res) {
+                        /*done({
+                            'guid': res.guid,
+                            'ext': res.ext,
+                            'url': base64
+                        });*/
+                        console.log(res);
+                        $.ajax({
+                            url: 'http://127.0.0.1:8089/v1/user/update_setting/portrait',
+                            dataType: 'json',
+                            type: 'POST',
+                            data: {
+                                auth_token: Cookies.get('auth_token'),
+                                portrait: res.guid + '.' + res.ext
+                            },
+                            success: function(res) {
+                                $('#avatar_update_ok').show();
+                                setTimeout(function(){
+                                    $('#avatar_update_ok').hide();
+                                    $('#editting_dialog').modal('hide');
+                                }, 1000);
+                            },
+                            error: function(res) {
+                                $('#avatar_update_error').show();
+                                setTimeout(function(){
+                                    $('#avatar_update_error').hide();
+                                    //$('#editting_dialog').modal('hide');
+                                }, 1000);
+                            }
+                        });
                     },
-                    */
-                    built: function () {
-                        var containerData = $('#image').cropper('getContainerData');
-                        var width = 256;
-                        var heigth = 256;
-                        var boxData = {
-                            left: (containerData.width - width)/2,
-                            top: (containerData.height - width)/2,
-                            width: width,
-                            height: heigth
-                        }
-                        console.log(boxData);
-                        console.log(containerData);
-                        $('#image').cropper('setCropBoxData', boxData);
+                    error: function(res) {
+                        $('#avatar_update_error').show();
+                        setTimeout(function(){
+                            $('#avatar_update_error').hide();
+                            //$('#editting_dialog').modal('hide');
+                        }, 1000);
                     }
                 });
-            });
-        </script>
-    </head>
-    <body>
+
+            })
+        });
+    </script>
+</head>
+<body>
+<div id="editting_dialog" class="ui stardand modal hidden">
+    <i class="close icon"></i>
+    <div class="header">
+        头像设置
+    </div>
+    <div class="content">
         <div>
-            <img id="image" src="../logo/logo-origin.png">
+            <img id="avatar" style="width: 384px;" src="../logo/logo-origin.png">
         </div>
-    </body>
-    <style>
-        img {
-            width: 384px; /* This rule is very important, please do not ignore this! */
-        }
-    </style>
+        <div id="avatar_update_ok" class="ui positive message hidden">
+            <div class="header">更新成功!</div>
+        </div>
+        <div id="avatar_update_error" class="ui negative message hidden">
+            <div class="header">更新失败!</div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui negative black button right labeled icon button">
+            取消
+            <i class="close icon"></i>
+        </div>
+        <div id="update_avatar" class="ui green right labeled icon button">
+            更新
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+</body>
 </html>
