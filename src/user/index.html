@@ -33,6 +33,7 @@
             $(document).ready(function(){
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
                 $('#checkin_status').hide();
+                $('#file').hide();
                 $('#checkin').show();
                 var user_info;
                 $.ajax({
@@ -48,6 +49,7 @@
                         Cookies.set('user_info', user_info);
                         date = new Date();
                         $('#username').text(user_info.user_name);
+                        $('.tidy-avatar > img').attr('src', Cookies.get('imgurl') + user_info.portrait);
                         if(user_info['last_checkin']){
                             if(user_info.last_checkin.create_year == date.getFullYear() &&
                                     user_info.last_checkin.create_month == date.getMonth() + 1 &&
@@ -137,14 +139,17 @@
                     window.location.href = '../auth/login.html';
                 });
 
+                ///////////////////////////////////////////////////////
+
+                /*
                 $('#avatar').cropper({
                     aspectRatio: 16 / 9,
                     cropBoxResizable: false,
                     cropBoxMovable: false,
                     dragMode: 'move',
                     aspectRatio: 1,
-                    minContainerWidth: document.body.clientWidth - 40,
-                    minContainerHeight: document.body.clientWidth - 40,
+                    minContainerWidth: document.body.clientWidth - 48,
+                    minContainerHeight: document.body.clientWidth - 48,
                     toggleDragModeOnDblclick: false,
                     /*
                      crop: function(e) {
@@ -157,7 +162,7 @@
                      console.log(e.scaleX);
                      console.log(e.scaleY);
                      },
-                     */
+                     * /
                     built: function () {
                         var containerData = $('#avatar').cropper('getContainerData');
                         var width = 192;
@@ -173,14 +178,17 @@
                         $('#avatar').cropper('setCropBoxData', boxData);
                     }
                 });
+                */
                 $('.tidy-edit-avatar').click(function () {
-                    $('#editting_dialog')
-                            .modal('show')
-                    ;
+                    $('#file').click();
+                    //$('#editting_dialog').modal('show');
                 });
                 //$('#editting_dialog').modal('show');
                 $('#update_avatar').click(function () {
-                    var dataURL = $('#avatar').cropper('getCroppedCanvas').toDataURL('image/png', 1.0);
+                    var dataURL = $('#avatar').cropper('getCroppedCanvas', {
+                        width: 256,
+                        height: 256
+                    }).toDataURL('image/png', 1.0);
                     console.log(dataURL);
                     $('.tidy-avatar > img').attr('src', dataURL);
 
@@ -238,7 +246,71 @@
                         }
                     });
 
-                })
+                });
+
+                ///////////////////////////////////////////////////////
+
+                $('#file').change(function (evt) {
+                    //evt.preventDefault();
+
+                    var file = this.files[0];
+                    var img = new Image();
+                    img.onload = function() {
+                        var width = img.width,
+                                height = img.height,
+                                scale = width / height;
+
+                        if(width >= 1200 && height >= 1200){
+                            width = parseInt(1200);
+                            height = parseInt(width / scale);
+                            canvas = document.createElement("canvas");
+                            var ctx = canvas.getContext("2d");
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.drawImage(img, 0, 0, width, height);
+                            var dataURL = canvas.toDataURL('image/png',1.0);
+                            $('#avatar').attr('src', dataURL);
+                        } else {
+                            $('#avatar').attr('src', img.src);
+                        }
+
+                        $('#avatar').cropper({
+                            aspectRatio: 16 / 9,
+                            cropBoxResizable: false,
+                            cropBoxMovable: false,
+                            dragMode: 'move',
+                            aspectRatio: 1,
+                            minContainerWidth: document.body.clientWidth - 48,
+                            minContainerHeight: document.body.clientWidth - 48,
+                            toggleDragModeOnDblclick: false,
+                            built: function () {
+                                var containerData = $('#avatar').cropper('getContainerData');
+                                var width = 192;
+                                var heigth = 192;
+                                var boxData = {
+                                    left: (containerData.width - width)/2,
+                                    top: (containerData.height - width)/2,
+                                    width: width,
+                                    height: heigth
+                                };
+                                console.log(boxData);
+                                console.log(containerData);
+                                $('#avatar').cropper('setCropBoxData', boxData);
+                                $('#editting_dialog').modal('show');
+                            }
+                        });
+                    };
+
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var base64 = reader.result;
+                        img.src=base64;
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                ///////////////////////////////////////////////////////
+
             });
         </script>
     </head>
@@ -446,6 +518,9 @@
                 </div>
             </div>
         </div>
+        <form>
+            <input id="file" type="file" name="file" accept="image/*"/>
+        </form>
     </body>
     <style>
         .tidy-avatar {
