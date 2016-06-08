@@ -61,7 +61,7 @@
                 var last_timestamp = parseInt(Date.parse(new Date())/1000);
                 var cnt = 32;
                 var load_func = function () {
-                    console.info('TBD...paging...');
+                    //console.info('TBD...paging...');
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'jsonp',
@@ -77,6 +77,12 @@
                             var sorted = _.sortBy(res.data, ['timestamp']);
                             if(sorted.length == 0){
                                 console.log('no data!');
+                                $('#container').append($('<div class="ui fluid card">' +
+                                        '<div class="content">' +
+                                            '<div class="description">' +
+                                                '<p>已经加载完了,没有更多的签到记录了!' +
+                                                '</p>' +
+                                        '</div></div></div>'));
                                 return;
                             }
                             console.log(sorted);
