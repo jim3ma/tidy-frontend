@@ -12,6 +12,7 @@
         <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript" src="../system/feedback.js"></script>
+        <script type="application/javascript" src="../static/js/htmlescape.js"></script>
         <script type="application/javascript">
             $(document).ready(function(){
                 var auth_token = Cookies.get('auth_token');
@@ -96,8 +97,8 @@
                                 var html = tmpl({
                                     'cuid': user_info.uid,
                                     'uid': c.user_id,
-                                    'user_name': c.user_name,
-                                    'content': c.content,
+                                    'user_name': htmlEscape(c.user_name),
+                                    'content': htmlEscape(c.content),
                                     'date': date,
                                     'imgurl': Cookies.get('imgurl'),
                                     'imgs': c.images
