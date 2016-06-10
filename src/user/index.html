@@ -256,10 +256,14 @@
 
                 ///////////////////////////////////////////////////////
 
+                var croper_loaded = false;
                 $('#file').change(function (evt) {
                     //evt.preventDefault();
 
                     var file = this.files[0];
+                    if(file == undefined){
+                        return;
+                    }
                     var img = new Image();
                     img.onload = function() {
                         var width = img.width,
@@ -279,6 +283,9 @@
                         } else {
                             $('#avatar').attr('src', img.src);
                         }
+                        if(croper_loaded){
+                            $('#avatar').cropper('destroy');
+                        }
 
                         $('#avatar').cropper({
                             aspectRatio: 16 / 9,
@@ -290,6 +297,7 @@
                             minContainerHeight: document.body.clientWidth - 48,
                             toggleDragModeOnDblclick: false,
                             built: function () {
+                                croper_loaded = true;
                                 var containerData = $('#avatar').cropper('getContainerData');
                                 var width = 192;
                                 var heigth = 192;

@@ -77,7 +77,8 @@
                             var sorted = _.sortBy(res.data, ['timestamp']);
                             if(sorted.length == 0){
                                 console.log('no data!');
-                                $('#container').append($('<div class="ui fluid card">' +
+                                $('#empty_msg').remove();
+                                $('#container').append($('<div id="empty_msg" class="ui fluid card">' +
                                         '<div class="content">' +
                                             '<div class="description">' +
                                                 '<p>已经加载完了,没有更多的签到记录了!' +
