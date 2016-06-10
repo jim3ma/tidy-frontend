@@ -514,6 +514,22 @@
                 <div>
                     <img id="avatar" style="width: 512px;" src="">
                 </div>
+                <div class="ui center aligned container" style="margin-top: 16px;">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" onclick="$('#avatar').cropper('zoom', 0.1)">
+                            <i class="zoom icon large"></i>
+                        </div>
+                        <div class="ui button" onclick="$('#avatar').cropper('zoom', -0.1)">
+                            <i class="zoom out icon large"></i>
+                        </div>
+                        <div class="ui button"  onclick="$('#avatar').cropper('rotate', 45)">
+                            <i class="repeat icon large"></i>
+                        </div>
+                        <div class="ui button"  onclick="$('#avatar').cropper('rotate', -45)">
+                            <i class="horizontally flipped repeat icon large"></i>
+                        </div>
+                    </div>
+                </div>
                 <div id="avatar_update_ok" class="ui positive message hidden">
                     <div class="header">更新成功!</div>
                 </div>
