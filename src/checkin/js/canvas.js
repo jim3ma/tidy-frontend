@@ -82,6 +82,10 @@ function prepare(element, check, done, fail) {
         }
 
         var file = this.files[0];
+        if(file == undefined){
+            fail();
+            return;
+        }
         var img = new Image();
         img.onload = function() {
             /*
