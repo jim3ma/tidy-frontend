@@ -46,7 +46,7 @@ function compress(img) {
     if ((count = width * height / 1000000) > 1) {
         //计算要分成多少块瓦片
         count = ~~(Math.sqrt(count)+1);
-        
+
         // 计算每块瓦片的宽和高
         var nw = ~~(width / count);
         var nh = ~~(height / count);
@@ -54,8 +54,10 @@ function compress(img) {
         tCanvas.height = nh;
         for (var i = 0; i < count; i++) {
             for (var j = 0; j < count; j++) {
-                tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+                tctx.drawImage(img, ~~(i * nw * ratio), ~~(j * nh * ratio), ~~(nw * ratio), ~~(nh * ratio), 0, 0, nw, nh);
+                console.log('image position: ' + ~~(i * nw * ratio) + ', ' + ~~(j * nh * ratio) + ', ' + ~~(nw * ratio) + ', ' +  ~~(nh * ratio));
                 ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+                console.log('canvas position: ' + i * nw + ', ' + j * nh + ', ' + nw, nh);
             }
         }
     } else {
