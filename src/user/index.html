@@ -15,20 +15,13 @@
         <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript" src="../system/feedback.js"></script>
+        <script type="application/javascript" src="../static/js/image.js"></script>
 
         <!-- TBD dynamic load resources -->
         <link rel="stylesheet" href="//cdn.bootcss.com/cropper/2.3.1/cropper.min.css">
         <script type="application/javascript" src="//cdn.bootcss.com/cropper/2.3.1/cropper.min.js"></script>
 
         <script type="application/javascript">
-            function dataURLtoBlob(dataurl) {
-                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-                while(n--){
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                return new Blob([u8arr], {type:mime});
-            }
 
             $(document).ready(function(){
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
@@ -266,23 +259,18 @@
                     }
                     var img = new Image();
                     img.onload = function() {
+                        $('#msg_loading').addClass('active');
+
                         var width = img.width,
                                 height = img.height,
                                 scale = width / height;
 
-                        if(width >= 1200 && height >= 1200){
-                            width = parseInt(1200);
-                            height = parseInt(width / scale);
-                            canvas = document.createElement("canvas");
-                            var ctx = canvas.getContext("2d");
-                            canvas.width = width;
-                            canvas.height = height;
-                            ctx.drawImage(img, 0, 0, width, height);
-                            var dataURL = canvas.toDataURL('image/png',1.0);
-                            $('#avatar').attr('src', dataURL);
+                        if(width >= 1000 || height >= 1000){
+                            $('#avatar').attr('src', compress(img));
                         } else {
                             $('#avatar').attr('src', img.src);
                         }
+
                         if(croper_loaded){
                             $('#avatar').cropper('destroy');
                         }
@@ -313,6 +301,8 @@
                                 $('#editting_dialog').modal('show');
                             }
                         });
+                        $('#msg_loading').removeClass('active');
+
                     };
 
                     var reader = new FileReader();
@@ -551,6 +541,9 @@
         <form>
             <input id="file" type="file" name="file" accept="image/*"/>
         </form>
+        <div id="msg_loading" class="ui dimmer">
+            <div class="ui text loader">图片处理中,请稍后...</div>
+        </div>
     </body>
     <style>
         .tidy-avatar {

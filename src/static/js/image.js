@@ -1,5 +1,5 @@
 /**
- * Created by jim on 5/11/16.
+ * Created by jimmar on 6/10/16.
  */
 
 // 用于压缩图片的canvas
@@ -46,7 +46,7 @@ function compress(img) {
     if ((count = width * height / 1000000) > 1) {
         //计算要分成多少块瓦片
         count = ~~(Math.sqrt(count)+1);
-
+        
         // 计算每块瓦片的宽和高
         var nw = ~~(width / count);
         var nh = ~~(height / count);
@@ -63,74 +63,10 @@ function compress(img) {
     }
 
     //进行压缩
-    var dataurl = canvas.toDataURL('image/png', 0.8);
+    var dataurl = canvas.toDataURL('image/png', 1);
     console.log('压缩前：' + initSize);
     console.log('压缩后：' + dataurl.length);
     console.log('压缩率：' + ~~(100 * (initSize - dataurl.length) / initSize) + "%");
     tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
     return dataurl;
-}
-
-function prepare(element, check, done, fail) {
-    $(element).change(function (evt) {
-        //evt.preventDefault();
-
-        if (!check()){
-            return;
-        }
-
-        var file = this.files[0];
-        var img = new Image();
-        img.onload = function() {
-            /*
-            var width = img.width,
-                height = img.height,
-                scale = width / height;
-            width = parseInt(800);
-            height = parseInt(width / scale);
-
-            canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            var dataurl = canvas.toDataURL('image/png',0.8);
-            */
-
-            // TBD
-
-            var dataurl = compress(img);
-            var imgblob = dataURLtoBlob(dataurl);
-            var fd = new FormData();
-            fd.append('file', imgblob, 'image-scaled.png');
-
-            $.ajax({
-                url: 'http://127.0.0.1:8089/v1/user/uploadimg',
-                type: 'POST',
-                data: fd,
-                cache: false,
-                contentType: false,
-                enctype: 'multipart/form-data',
-                processData: false,
-                timeout: 60000,
-                success: function(res) {
-                    done({
-                        'guid': res.guid,
-                        'ext': res.ext,
-                        'url': dataurl
-                    });
-                },
-                error: function(res) {
-                    fail();
-                }
-            });
-        };
-
-        var reader = new FileReader();
-        reader.onload = function() {
-            var base64 = reader.result;
-            img.src=base64;
-        };
-        reader.readAsDataURL(file);
-    });
 }
