@@ -41,9 +41,9 @@ function compress(img) {
     //ctx.fillStyle = "#fff";
     //ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 如果图片像素大于100万则使用瓦片绘制
+    // 如果图片像素大于20万则使用瓦片绘制
     var count;
-    if ((count = width * height / 1000000) > 1) {
+    if ((count = width * height / 200000) > 1) {
         //计算要分成多少块瓦片
         count = ~~(Math.sqrt(count)+1);
 
@@ -61,7 +61,7 @@ function compress(img) {
             }
         }
     } else {
-        ctx.drawImage(img, 0, 0, width, height);
+        ctx.drawImage(img, 0, 0, ~~width, ~~height);
     }
 
     //进行压缩

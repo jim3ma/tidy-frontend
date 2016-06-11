@@ -275,6 +275,8 @@
                             $('#avatar').cropper('destroy');
                         }
 
+                        container_width = document.body.clientWidth - 48;
+
                         $('#avatar').cropper({
                             aspectRatio: 16 / 9,
                             cropBoxResizable: false,
