@@ -12,6 +12,12 @@
         <script type="application/javascript" src="../static/js/jwt-decode.min.js"></script>
         <script type="application/javascript" src="../auth/auth.js"></script>
         <script type="application/javascript">
+            function getUrlParam(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                // if (r != null) return unescape(r[2]); return null; //返回参数值
+                if (r != null) return decodeURI(r[2]); return null; //返回参数值
+            }
             $(document).ready(function(){
                 $('.ui.message').hide();
                 $('#cigrid').hide();
@@ -24,6 +30,7 @@
                 Cookies.set('img_uploadjs', 'canvas.js');
                 var user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
+
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
                     $('#checking').removeClass('inactive').addClass('active');
@@ -39,15 +46,31 @@
                         }
                     }
                     console.log('img: ' + img);
+
+                    ci = {
+                        auth_token: Cookies.get('auth_token'),
+                        content: content,
+                        img: img
+                    };
+                    method = 'POST';
+                    //mode = "new";
+
+                    if(getUrlParam("mode") == 'edit'){
+                        cid = getUrlParam("cid");
+                        ci = {
+                            auth_token: Cookies.get('auth_token'),
+                            content: content,
+                            img: img,
+                            id: cid
+                        };
+                        method = 'PUT';
+                    }
+
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'json',
-                        type: 'POST',
-                        data: {
-                            auth_token: Cookies.get('auth_token'),
-                            content: content,
-                            img: img
-                        },
+                        type: method,
+                        data: ci,
                         success: function (res) {
                             console.log(res);
                             window.location.href = '../user/index.html';

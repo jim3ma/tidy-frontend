@@ -14,7 +14,56 @@
         <script type="application/javascript" src="../system/feedback.js"></script>
         <script type="application/javascript" src="../static/js/htmlescape.js"></script>
         <script type="application/javascript">
+            function setupCheckin(cid){
+                var timeout ;
+                var cssid = '#' + cid;
+
+                $(cssid).mousedown(function() {
+                    timeout = setTimeout(function() {
+                        //$(cssid).text("in");
+                        // show menu
+                    }, 2000);
+                });
+
+                $(cssid).mouseup(function() {
+                    clearTimeout(timeout);
+                    //$(cssid).text("out");
+                });
+
+                $(cssid).mouseout(function() {
+                    clearTimeout(timeout);
+                    //$(cssid).text("out");
+                });
+            }
+
+            function deleteCI(cid){
+                $.ajax({
+                    url: 'http://127.0.0.1:8089/v1/checkin' + '?' +
+                        $.param({'auth_token': Cookies.get('auth_token'), 'cid': cid}),
+                    //url: 'http://127.0.0.1:8089/v1/checkin',
+                    dataType: 'json',
+                    method: 'DELETE',
+                    //contentType: 'multipart/form-data',
+                    //processData: false,
+                    traditional: true,
+                    data: {
+                        auth_token: Cookies.get('auth_token'),
+                        cid: cid,
+                    }
+                });
+            }
+            function getUrlParam(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                // if (r != null) return unescape(r[2]); return null; //返回参数值
+                if (r != null) return decodeURI(r[2]); return null; //返回参数值
+            }
+
             $(document).ready(function(){
+                var mode = getUrlParam('mode');
+                if(mode == null){
+                    mode = 'user';
+                }
                 var auth_token = Cookies.get('auth_token');
                 var user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
@@ -102,13 +151,16 @@
                                 }
                                 var date = c.create_year + '年' + c.create_month + '月' + c.create_day + '日' + ' ' + c.create_hour + ":" + c.create_min + ":" + c.create_sec;
                                 var html = tmpl({
+                                    'cid': c.id,
                                     'cuid': user_info.uid,
                                     'uid': c.user_id,
                                     'user_name': htmlEscape(c.user_name),
                                     'content': htmlEscape(c.content),
                                     'date': date,
                                     'imgurl': Cookies.get('imgurl'),
-                                    'imgs': c.images
+                                    'imgs': c.images,
+                                    'public': c.public,
+                                    'mode': mode
                                 });
                                 //console.log(html);
                                 $('#container').append($(html));

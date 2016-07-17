@@ -1,4 +1,4 @@
-<div class="ui fluid card">
+<div id="ciCard_<%= cid %>" class="ui fluid card">
 <% if(imgs != "") { %>
   <% if(imgs.length == 1) { %>
   <div class="ui image">
@@ -25,6 +25,17 @@
     </div>
     <div class="meta">
       <%= date %>
+      <% if(mode == "user") { %>
+      <!--
+        <% if(public != true) { %>
+      <a id="mkPub_<%= cid %>" class="right floated created" onclick="makeCIPublic('<%= cid %>')">公开</a>
+        <% } else { %>
+      <a id="mkPriv_<%= cid %>"class="right floated created" onclick="makeCIPrivate('<%= cid %>')">仅自己可见</a>
+        <% } %>
+      -->
+      <a class="right floated created" onclick="deleteCI('<%= cid %>')">删除</a>
+      <a class="right floated created" href="../checkin/checkin.html?mode=edit&cid=<%= cid %>">编辑</a>
+      <% } %>
     </div>
   </div>
 </div>
