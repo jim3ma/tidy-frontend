@@ -22,13 +22,8 @@
         <script type="application/javascript" src="//cdn.bootcss.com/cropper/2.3.1/cropper.min.js"></script>
 
         <script type="application/javascript">
-
-            $(document).ready(function(){
-                Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
-                $('#checkin_status').hide();
-                $('#file').hide();
-                $('#checkin').show();
-                var user_info;
+            var user_info;
+            function update_user_info(){
                 $.ajax({
                     url: 'http://127.0.0.1:8089/v1/user/info',
                     dataType: 'json',
@@ -65,6 +60,13 @@
                         }
                     }
                 });
+            }
+            $(document).ready(function(){
+                Cookies.set('imgurl', 'http://127.0.0.1:8089/v1/static/images/');
+                $('#checkin_status').hide();
+                $('#file').hide();
+                $('#checkin').show();
+                update_user_info();
                 $('#checkin').click(function() {
                     //user_info = Cookies.getJSON('user_info');
                     //$('#checkin_days').text(user_info.continuous);
@@ -107,7 +109,7 @@
 
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/user/update_setting',
-                        dataType: 'json',
+                        //dataType: 'json',
                         type: 'POST',
                         data: {
                             auth_token: Cookies.get('auth_token'),
@@ -120,6 +122,7 @@
                         },
                         success: function(res) {
                             $('#msg_update_ok').show();
+                            update_user_info();
                             setTimeout(function(){
                                 $('#msg_update_ok').hide();
                                 $('#setting_dialog').modal('hide');
@@ -402,7 +405,7 @@
                                 <!-- <i class="lock icon"></i>-->
                                 旧密码
                             </div>
-                            <input id="old_password" type="password" name="password" placeholder="旧密码">
+                            <input id="old_password" type="password" name="password" placeholder="不修改密码,不用填写">
                         </div>
                     </div>
                     <div id="field_new_password" class="field">
