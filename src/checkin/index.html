@@ -77,6 +77,7 @@
                 $('#user').click(function () {
                     $('#user').addClass('active');
                     $('#users').removeClass('active');
+                    mode = 'user';
                     cur_type = list_type.PERSONAL;
                     reload_func();
                 });
@@ -84,6 +85,7 @@
                 $('#users').click(function () {
                     $('#users').addClass('active');
                     $('#user').removeClass('active');
+                    mode = 'users';
                     cur_type = list_type.ALL;
                     reload_func();
                 });
@@ -193,7 +195,7 @@
         <br/>
         <br/>
         <br/>
-        <div class="ui tiny bottom fixed inverted menu three labeled icon item">
+        <div class="ui tiny bottom fixed inverted menu four labeled icon item">
             <a class="item" href="../user/index.html">
                 <i class="home icon"></i>
                 首页
@@ -203,11 +205,11 @@
                 签到记录
             </a>
             <!--
+            -->
             <a id="users" class="item">
                 <i class="users icon"></i>
                 广场
             </a>
-            -->
             <a id="feedback" class="item">
                 <i class="bug icon"></i>
                 问题反馈

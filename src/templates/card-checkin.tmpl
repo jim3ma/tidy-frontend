@@ -35,6 +35,18 @@
       -->
       <a class="right floated created" onclick="deleteCI('<%= cid %>')">删除</a>
       <a class="right floated created" href="../checkin/checkin.html?mode=edit&cid=<%= cid %>">编辑</a>
+      <% } else { %>
+      <span class="right floated" onclick="editComment('<%= cid %>')">
+          <i class="comments outline icon"></i>
+          评论
+      </span>
+      <span class="right floated" onclick="likeCI('<%= cid %>')">
+          <i class="active like icon"></i>
+      </span>
+      <span class="right floated" onclick="thumbCI('<%= cid %>')">
+          <i class="like thumbs up icon"></i>
+          3
+      </span>
       <% } %>
     </div>
   </div>
