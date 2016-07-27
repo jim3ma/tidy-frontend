@@ -19,6 +19,12 @@
                 if (r != null) return decodeURI(r[2]); return null; //返回参数值
             }
             $(document).ready(function(){
+                var list_type = {
+                    PERSONAL: 0,
+                    ALL: 1,
+                    SPECIAL: 2,
+                    SPECIALCI: 3
+                };
                 $('.ui.message').hide();
                 $('#cigrid').hide();
                 $('#row2').hide();
@@ -31,6 +37,26 @@
                 var user_info = Cookies.getJSON('user_info');
                 Cookies.set('imgurl_prefix', 'http://127.0.0.1:8089/v1/static/images/');
 
+                if(getUrlParam("mode") == 'edit'){
+                    cid = getUrlParam("cid");
+                    // load the checkin record
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'json',
+                        type: 'GET',
+                        data: {
+                            auth_token: auth_token,
+                            type: list_type.SPECIALCI,
+                            cid: cid,
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $('#chkcnt').val(res[0].content);
+                            // TBD
+                            // update the images
+                        },
+                    })
+                }
                 $('#checkin').click(function() {
                     $('#chkcnt').attr('readonly', 'readonly');
                     $('#checking').removeClass('inactive').addClass('active');
@@ -50,7 +76,8 @@
                     ci = {
                         auth_token: Cookies.get('auth_token'),
                         content: content,
-                        img: img
+                        img: img,
+                        pub: $("#publicCI").is(":checked")
                     };
                     method = 'POST';
                     //mode = "new";
@@ -61,7 +88,8 @@
                             auth_token: Cookies.get('auth_token'),
                             content: content,
                             img: img,
-                            cid: cid
+                            cid: cid,
+                            pub: $("#publicCI").is(":checked")
                         };
                         method = 'PUT';
                     }
@@ -197,6 +225,10 @@
               <div id="checkin" class="ui basic button">
                   <i class="icon edit"></i>
                   签到
+              </div>
+              <div class="ui checkbox">
+                  <input id="publicCI" type="checkbox" name="public" checked="checked">
+                  <label>公开</label>
               </div>
               <div id="checking" class="ui inactive dimmer">
                   <div class="ui medium text loader">签到中</div>

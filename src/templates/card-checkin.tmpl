@@ -27,25 +27,40 @@
       <%= date %>
       <% if(mode == "user") { %>
       <!--
-        <% if(public != true) { %>
-      <a id="mkPub_<%= cid %>" class="right floated created" onclick="makeCIPublic('<%= cid %>')">公开</a>
-        <% } else { %>
-      <a id="mkPriv_<%= cid %>"class="right floated created" onclick="makeCIPrivate('<%= cid %>')">仅自己可见</a>
-        <% } %>
       -->
-      <a class="right floated created" onclick="deleteCI('<%= cid %>')">删除</a>
-      <a class="right floated created" href="../checkin/checkin.html?mode=edit&cid=<%= cid %>">编辑</a>
+      <a id="public_<%= cid %>"class="right floated created" onclick="togglePublic('<%= cid %>')">
+          <% if(public) { %>
+          <span id="public_msg_<%= cid %>">
+              <i class="share alternate icon"></i>已公开</span>
+          <span id="private_msg_<%= cid %>" class="hide">
+              <i class="share alternate icon"></i>未公开</span>
+          <% } else { %>
+          <span id="public_msg_<%= cid %>" class="hide">
+              <i class="share alternate icon"></i>已公开</span>
+          <span id="private_msg_<%= cid %>">
+              <i class="share alternate icon"></i>未公开</span>
+          <% } %>
+      </a>
+      <a class="right floated created" onclick="deleteCI('<%= cid %>')">
+          <i class="home remove circle outline icon"></i>
+          删除
+      </a>
+      <a class="right floated created" href="../checkin/checkin.html?mode=edit&cid=<%= cid %>">
+          <i class="home edit icon"></i>
+          编辑
+      </a>
       <% } else { %>
       <span class="right floated" onclick="editComment('<%= cid %>')">
           <i class="comments outline icon"></i>
           评论
       </span>
       <span class="right floated" onclick="toggleFavor('<%= cid %>')">
-          <i id="favor_<%= cid %>" class="<% if( favored) { %> active <% } %>like icon"></i>
+          <i id="favor_<%= cid %>" class="<% if( favored) { %>active <% } %>like icon"></i>
+          <span id="favor_count_<%= cid %>"><%= favor_count %></span>&nbsp收藏
       </span>
       <span class="right floated" onclick="toggleThumb('<%= cid %>')">
-          <i id="thumb_<%= cid %>" class="<% if( thumbed) { %> active <% } %>like thumbs up icon"></i>
-          <span id="thumb_count_<%= cid %>">0</span>
+          <i id="thumb_<%= cid %>" class="<% if( thumbed) { %>active <% } %>like thumbs up icon"></i>
+          <span id="thumb_count_<%= cid %>"><%= thumb_count %></span>&nbsp
       </span>
       <% } %>
     </div>

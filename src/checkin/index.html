@@ -37,22 +37,80 @@
             }
 
             function deleteCI(cid){
-                $.ajax({
-                    url: 'http://127.0.0.1:8089/v1/checkin' + '?' +
+                $('#deleteCI').click(function(){
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin' + '?' +
                         $.param({'auth_token': Cookies.get('auth_token'), 'cid': cid}),
-                    //url: 'http://127.0.0.1:8089/v1/checkin',
-                    dataType: 'json',
-                    method: 'DELETE',
-                    //contentType: 'multipart/form-data',
-                    //processData: false,
-                    traditional: true,
-                    data: {
-                        auth_token: Cookies.get('auth_token'),
-                        cid: cid,
-                    }
+                        //url: 'http://127.0.0.1:8089/v1/checkin',
+                        dataType: 'json',
+                        method: 'DELETE',
+                        //contentType: 'multipart/form-data',
+                        //processData: false,
+                        traditional: true,
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        success: function(res){
+                            $('#ciCard_' + cid).remove();
+                        },
+
+                    }).fail(function(res){
+                        console.log(err);
+                    }).always(function(){
+                        $('#confirm_delete_dialog').modal('hide');
+                    });
                 });
+                $('#confirm_delete_dialog').modal('show');
             }
 
+            function togglePublic(cid){
+                if($('#public_msg_' + cid).hasClass('hide')){
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/public',
+                        //dataType: 'json',
+                        type: 'PUT',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $('#public_msg_' + cid).removeClass('hide');
+                            $('#private_msg_' + cid).addClass('hide');
+                        },
+                        statusCode: {
+                            403: function() {
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/private',
+                        //dataType: 'json',
+                        type: 'PUT',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $('#public_msg_' + cid).addClass('hide');
+                            $('#private_msg_' + cid).removeClass('hide');
+                        },
+                        statusCode: {
+                            403: function() {
+                            }
+                        },
+                        error: function (res) {
+                            console.log(res);
+                        }
+                    });
+                }
+            }
             function toggleThumb(cid){
                 if($('#thumb_' + cid).hasClass('active')){
                     $.ajax({
@@ -69,6 +127,8 @@
                         success: function (res) {
                             console.log(res);
                             $('#thumb_' + cid).removeClass('active');
+                            cnt = parseInt($('#thumb_count_' + cid).text()) - 1;
+                            $('#thumb_count_' + cid).html( cnt);
                         }
                     });
                 } else {
@@ -83,6 +143,8 @@
                         success: function (res) {
                             console.log(res);
                             $('#thumb_' + cid).addClass('active');
+                            cnt = parseInt($('#thumb_count_' + cid).text()) + 1;
+                            $('#thumb_count_' + cid).html( cnt);
                         }
                     });
                 }
@@ -104,6 +166,9 @@
                         success: function (res) {
                             console.log(res);
                             $('#favor_' + cid).removeClass('active');
+                            //$('#favor_' + cid).addClass('deactive');
+                            cnt = parseInt($('#favor_count_' + cid).text()) - 1;
+                            $('#favor_count_' + cid).html( cnt);
                         }
                     });
                 } else {
@@ -118,6 +183,8 @@
                         success: function (res) {
                             console.log(res);
                             $('#favor_' + cid).addClass('active');
+                            cnt = parseInt($('#favor_count_' + cid).text()) + 1;
+                            $('#favor_count_' + cid).html( cnt);
                         }
                     });
                 }
@@ -142,7 +209,8 @@
                 var list_type = {
                     PERSONAL: 0,
                     ALL: 1,
-                    SPECIAL: 2
+                    SPECIAL: 2,
+                    SPECIALCI: 3
                 };
                 var cur_type = list_type.PERSONAL;
                 $('#user').click(function () {
@@ -245,6 +313,8 @@
                                     'mode': mode,
                                     'thumbed': c.thumbed,
                                     'favored': c.favored,
+                                    'thumb_count': c.thumb_count,
+                                    'favor_count': c.favor_count,
                                 });
                                 //console.log(html);
                                 $('#container').append($(html));
@@ -299,5 +369,36 @@
                 问题反馈
             </a>
         </div>
+        <div id="confirm_delete_dialog" class="ui stardand modal hidden">
+            <i class="close icon"></i>
+            <div class="small header">
+                删除签到记录
+            </div>
+            <div class="content">
+                <div class="ui center aligned container">
+                    <p>
+                        <i class="huge red warning circle icon"></i>
+                        <h3>真的要删除选中的签到记录么?</h3>
+                        删除后不可以撤销哦!
+                    </p>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui negative black button right labeled icon button">
+                    取消
+                    <i class="close icon"></i>
+                </div>
+                <div id="deleteCI" class="ui green right labeled icon button">
+                    删除
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
     </body>
+
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
 </html>
