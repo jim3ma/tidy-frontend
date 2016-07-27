@@ -40,12 +40,12 @@
           <i class="comments outline icon"></i>
           评论
       </span>
-      <span class="right floated" onclick="likeCI('<%= cid %>')">
-          <i class="active like icon"></i>
+      <span class="right floated" onclick="toggleFavor('<%= cid %>')">
+          <i id="favor_<%= cid %>" class="<% if( favored) { %> active <% } %>like icon"></i>
       </span>
-      <span class="right floated" onclick="thumbCI('<%= cid %>')">
-          <i class="like thumbs up icon"></i>
-          3
+      <span class="right floated" onclick="toggleThumb('<%= cid %>')">
+          <i id="thumb_<%= cid %>" class="<% if( thumbed) { %> active <% } %>like thumbs up icon"></i>
+          <span id="thumb_count_<%= cid %>">0</span>
       </span>
       <% } %>
     </div>

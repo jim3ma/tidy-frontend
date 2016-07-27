@@ -52,6 +52,77 @@
                     }
                 });
             }
+
+            function toggleThumb(cid){
+                if($('#thumb_' + cid).hasClass('active')){
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/thumb' + '?' +
+                        $.param({'auth_token': Cookies.get('auth_token'), 'cid': cid}),
+                        method: 'DELETE',
+                        traditional: true,
+                        /*
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        */
+                        success: function (res) {
+                            console.log(res);
+                            $('#thumb_' + cid).removeClass('active');
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/thumb',
+                        //dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $('#thumb_' + cid).addClass('active');
+                        }
+                    });
+                }
+            }
+
+            function toggleFavor(cid){
+                if($('#favor_' + cid).hasClass('active')){
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/favor' + '?' +
+                        $.param({'auth_token': Cookies.get('auth_token'), 'cid': cid}),
+                        method: 'DELETE',
+                        traditional: true,
+                        /*
+                         data: {
+                         auth_token: Cookies.get('auth_token'),
+                         cid: cid,
+                         },
+                         */
+                        success: function (res) {
+                            console.log(res);
+                            $('#favor_' + cid).removeClass('active');
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: 'http://127.0.0.1:8089/v1/checkin/favor',
+                        //dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            auth_token: Cookies.get('auth_token'),
+                            cid: cid,
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            $('#favor_' + cid).addClass('active');
+                        }
+                    });
+                }
+            }
+
             function getUrlParam(name) {
                 var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
                 var r = window.location.search.substr(1).match(reg);  //匹配目标参数
@@ -96,10 +167,13 @@
                     $('#container').html('An error occurred: ' + jqXHR.status).append(jqXHR.responseText);
                 });
 
+                var reloading = false;
                 var reload_func = function () {
+
                     $('#container').empty();
                     last_timestamp = parseInt(Date.parse(new Date())/1000);
                     check_and_load();
+
                 };
                 var check_and_load = function () {
                     if(card_tmpl != "") {
@@ -113,6 +187,12 @@
                 var cnt = 32;
                 var load_func = function () {
                     //console.info('TBD...paging...');
+                    if(reloading){
+                        console.log("already loading, cancelled");
+                        return;
+                    } else {
+                        reloading = true;
+                    }
                     $.ajax({
                         url: 'http://127.0.0.1:8089/v1/checkin',
                         dataType: 'jsonp',
@@ -162,12 +242,16 @@
                                     'imgurl': Cookies.get('imgurl'),
                                     'imgs': c.images,
                                     'public': c.public,
-                                    'mode': mode
+                                    'mode': mode,
+                                    'thumbed': c.thumbed,
+                                    'favored': c.favored,
                                 });
                                 //console.log(html);
                                 $('#container').append($(html));
                             }
                         }
+                    }).always(function(){
+                        reloading = false;
                     });
                 };
                 //reload_func();
