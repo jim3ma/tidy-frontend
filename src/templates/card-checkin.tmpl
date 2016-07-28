@@ -50,10 +50,12 @@
           编辑
       </a>
       <% } else { %>
+      <!--
       <span class="right floated" onclick="editComment('<%= cid %>')">
           <i class="comments outline icon"></i>
           评论
       </span>
+      -->
       <span class="right floated" onclick="toggleFavor('<%= cid %>')">
           <i id="favor_<%= cid %>" class="<% if( favored) { %>active <% } %>like icon"></i>
           <span id="favor_count_<%= cid %>"><%= favor_count %></span>&nbsp收藏
