@@ -52,6 +52,11 @@
                         success: function (res) {
                             console.log(res);
                             $('#chkcnt').val(res[0].content);
+                            if(res[0].public){
+                                $("#publicCI").attr("checked",true);
+                            } else {
+                                $("#publicCI").attr("checked",false);
+                            }
                             // TBD
                             // update the images
                         },
