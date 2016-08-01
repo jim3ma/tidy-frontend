@@ -19,7 +19,10 @@
   <% } %>
 <% } %>
   <div class="content">
-    <div class="header"><%= user_name %></div>
+    <div class="header">
+      <img class="ui avatar image" src="<%= user_avatar %>">
+      <a><%= user_name %></a>
+    </div>
     <div class="description">
       <p><%= content %></p>
     </div>
