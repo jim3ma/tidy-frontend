@@ -38,7 +38,7 @@
             }
             check_auth();
             $(document).ready(function(){
-                console.log(Cookies.get("1") == undefined);
+                //console.log(Cookies.get("1") == undefined);
                 //$('.ui.form').form({
                 //    fields: {
                 //        email: {
@@ -244,7 +244,10 @@
                 </div>
             </form>
             <div class="ui message">
-                第一次访问Tidy? 那<a id="start_register" href="#">赶紧注册</a>吧
+            第一次访问Tidy? 那<a id="start_register" href="#">点我注册</a>吧
+            </div>
+            <div class="ui message">
+                忘记密码? 那<a id="reset_password" href="../user/reset-password.html">点我重置</a>吧
             </div>
         </div>
     </div>
