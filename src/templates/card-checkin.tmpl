@@ -19,10 +19,12 @@
   <% } %>
 <% } %>
   <div class="content">
+    <% if(mode != "user") { %>
     <div class="header">
       <img class="ui avatar image" src="<%= user_avatar %>">
       <a><%= user_name %></a>
     </div>
+    <% } %>
     <div class="description">
       <p><%= content %></p>
     </div>
