@@ -21,7 +21,11 @@
   <div class="content">
     <% if(mode != "user") { %>
     <div class="header">
+      <% if( /^(http|ftp).*/.test(user_avatar) ) { %>
       <img class="ui avatar image" src="<%= user_avatar %>">
+      <% } else { %>
+      <img class="ui avatar image" src="<%= imgurl %><%= user_avatar %>">
+      <% } %>
       <a><%= user_name %></a>
     </div>
     <% } %>
